@@ -1,0 +1,1780 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Figma Recreation — iOS Toolbar (SF Symbols)</title>
+    <style>
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      :root {
+        --bg: #f9f9f9;
+        --pill: #ffffff;
+        --pill-border: #ebebeb;
+        --label-primary: #1a1a1a;
+        --label-secondary: #727272;
+      }
+      body {
+        background: var(--bg);
+        font-family:
+          "SF Pro",
+          -apple-system,
+          BlinkMacSystemFont,
+          "SF Pro Text",
+          "Helvetica Neue",
+          sans-serif;
+        display: flex;
+        align-items: flex-start;
+        justify-content: center;
+        min-height: 100vh;
+        padding: 0;
+        -webkit-font-smoothing: antialiased;
+      }
+      .canvas {
+        width: 100%;
+        max-width: 1440px;
+        height: 100vh;
+        min-height: 900px;
+        background: var(--bg);
+        border-radius: 0;
+        position: relative;
+        overflow: hidden;
+        box-shadow: none;
+      }
+      /* SF Symbol glyphs — must use SF Pro, not SVG */
+      .sf {
+        font-family:
+          "SF Pro",
+          -apple-system,
+          BlinkMacSystemFont,
+          sans-serif;
+        font-weight: 510;
+        -webkit-font-smoothing: antialiased;
+        line-height: 1;
+        display: inline-block;
+      }
+      .topbar {
+        position: absolute;
+        left: 17px;
+        right: 17px;
+        top: 23px;
+        z-index: 10;
+        height: 42px;
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+      }
+      .top-left,
+      .top-right {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        flex: 1;
+      }
+      .top-right {
+        justify-content: flex-end;
+      }
+      .pill {
+        background: #fff;
+        box-shadow: 0 0 0 0.4px #ebebeb;
+        border-radius: 999px;
+        height: 36px;
+        display: flex;
+        align-items: center;
+        padding: 0 6px;
+      }
+      .pill.menu {
+        padding: 0 12px 0 8px;
+        gap: 4px;
+        font-size: 13.77px;
+        font-weight: 510;
+        color: #1a1a1a;
+      }
+      .pill.menu {
+        position: relative;
+        cursor: pointer;
+      }
+      #menupop {
+        left: 0;
+        transform: none;
+        text-align: left;
+      }
+      .pop a.pop-item {
+        display: block;
+        color: #1a1a1a;
+        text-decoration: none;
+      }
+      .pill.menu .sf {
+        font-size: 13.77px;
+        font-weight: 590;
+      }
+      .pill.group {
+        padding: 0 8px;
+        gap: 2px;
+      }
+      .icon-btn {
+        width: 30px;
+        height: 30px;
+        border-radius: 999px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #000;
+      }
+      .icon-btn .sf {
+        font-size: 13.77px;
+      }
+      .title-center {
+        position: absolute;
+        left: 50%;
+        top: 2px;
+        transform: translateX(-50%);
+        text-align: center;
+        line-height: 1.15;
+        pointer-events: none;
+      }
+      .title-center h1 {
+        font-size: 20px;
+        font-weight: 590;
+        color: #1a1a1a;
+        letter-spacing: -0.2px;
+      }
+      .title-center p {
+        font-size: 10px;
+        font-weight: 510;
+        color: #727272;
+        margin-top: 2px;
+      }
+      .circle-btn {
+        width: 36px;
+        height: 36px;
+        background: #fff;
+        box-shadow: 0 0 0 0.4px #ebebeb;
+        border-radius: 999px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #727272;
+      }
+      .circle-btn .sf {
+        font-size: 13.77px;
+      }
+      .search-pill {
+        width: 146px;
+        height: 36px;
+        background: #fff;
+        box-shadow: 0 0 0 0.4px #ebebeb;
+        border-radius: 999px;
+        display: flex;
+        align-items: center;
+        padding: 0 10px 0 12px;
+        gap: 6px;
+        color: rgba(60, 60, 67, 0.6);
+        font-size: 13px;
+      }
+      .search-pill .sf {
+        font-size: 13px;
+      }
+      .search-pill .ph {
+        color: #bfbfbf;
+        flex: 1;
+        font-weight: 510;
+      }
+
+      .center-stack {
+        z-index: 10;
+        position: absolute;
+        left: 50%;
+        top: 74px;
+        transform: translateX(-50%);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+      }
+      .segmented {
+        background: #e9e9ee;
+        border-radius: 100px;
+        height: 50px;
+        padding: 2px;
+        display: flex;
+        align-items: stretch;
+        gap: 4px;
+      }
+      .seg-item {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 1000px;
+        color: #000;
+        min-width: 46px;
+        padding: 0 6px;
+        cursor: pointer;
+        border: 0;
+        background: transparent;
+        font: inherit;
+        position: relative;
+      }
+      .seg-item .sf {
+        font-size: 20px;
+        line-height: 18px;
+      }
+      .seg-item.selected {
+        background: #fff;
+        box-shadow: 0 2px 20px rgba(0, 0, 0, 0.06);
+      }
+      .seg-item:not(.selected):hover {
+        background: #f4f4f6;
+      }
+      .row2 {
+        display: flex;
+        justify-content: center;
+      }
+      #tool-settings {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+      }
+      #tool-settings:empty {
+        display: none;
+      }
+      #tool-settings > .segmented > .seg-item {
+        font-weight: 600;
+        font-size: 15px;
+        color: #000;
+      }
+      #tool-settings .fmt-b {
+        font-weight: 800;
+      }
+      .color-dot {
+        width: 28px;
+        height: 28px;
+        border-radius: 9999px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background:
+          radial-gradient(
+            ellipse 50% 50% at 50% 50%,
+            #e4e4e4 0%,
+            rgba(228, 228, 228, 0) 88%
+          ),
+          conic-gradient(
+            from 0deg at 50% 50%,
+            #e7e040 0deg,
+            #eeaa3c 45deg,
+            #e8403b 90deg,
+            #b33ed5 132deg,
+            #694ae8 182deg,
+            #3ccae7 231deg,
+            #3ce885 270deg,
+            #89e743 313deg,
+            #e7e040 360deg
+          );
+      }
+      .pip {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        box-shadow: 0 0 0 1.5px #fff;
+      }
+      .slider-pill {
+        background: #fff;
+        border-radius: 1000px;
+        height: 46px;
+        display: flex;
+        align-items: center;
+        padding: 0 18px 0 14px;
+        gap: 12px;
+        box-shadow: 0 2px 20px rgba(0, 0, 0, 0.06);
+        min-width: 176px;
+      }
+      .slider-pill .sf {
+        font-size: 20px;
+        color: #000;
+      }
+      .slider-track {
+        width: 112px;
+        height: 6px;
+        background: rgba(120, 120, 120, 0.2);
+        border-radius: 3px;
+        position: relative;
+      }
+      .slider-fill {
+        position: absolute;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        width: 75%;
+        background: #0088ff;
+        border-radius: 3px;
+      }
+      .slider-thumb {
+        position: absolute;
+        left: 75%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        width: 38px;
+        height: 24px;
+        background: #fff;
+        border-radius: 100px;
+        box-shadow:
+          0 6px 13px rgba(0, 0, 0, 0.12),
+          0 0.5px 4px rgba(0, 0, 0, 0.12);
+      }
+      .shp {
+        width: 20px;
+        height: 20px;
+        box-sizing: border-box;
+      }
+      .shp-sq {
+        border: 2.5px solid #000;
+        border-radius: 4px;
+      }
+      .shp-ci {
+        border: 2.5px solid #000;
+        border-radius: 50%;
+      }
+      .shp-tr {
+        width: 0;
+        height: 0;
+        border-left: 11px solid transparent;
+        border-right: 11px solid transparent;
+        border-bottom: 19px solid #000;
+      }
+      .shp-di {
+        border: 2.5px solid #000;
+        border-radius: 4px;
+        transform: rotate(45deg) scale(0.78);
+      }
+      .shp-ln {
+        width: 20px;
+        height: 3px;
+        background: #000;
+        border-radius: 2px;
+      }
+      .solid-dot {
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        box-shadow: 0 0 0 0.5px rgba(0, 0, 0, 0.2);
+      }
+      .fmt {
+        font-size: 15px;
+      }
+      .fmt-b {
+        font-weight: 800;
+      }
+      .fmt-i {
+        font-style: italic;
+        font-weight: 400;
+      }
+      .fmt-u {
+        text-decoration: underline;
+      }
+      .step-btn {
+        min-width: 28px;
+        font-size: 16px;
+      }
+      .swatches {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        padding: 0 6px;
+      }
+      .swatch {
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        cursor: pointer;
+        box-shadow: 0 0 0 0.5px rgba(0, 0, 0, 0.15);
+        border: 2px solid transparent;
+        background-clip: padding-box;
+      }
+      .swatch.sel {
+        box-shadow: 0 0 0 2px #007aff;
+      }
+      .nativepick {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        opacity: 0;
+        cursor: pointer;
+        padding: 0;
+        border: 0;
+        background: none;
+      }
+      .pop {
+        position: absolute;
+        top: calc(100% + 10px);
+        left: 50%;
+        transform: translateX(-50%);
+        background: #fff;
+        border-radius: 14px;
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.16);
+        padding: 6px;
+        z-index: 20;
+        min-width: 160px;
+      }
+      .pop-item {
+        padding: 8px 10px;
+        border-radius: 8px;
+        font-size: 14px;
+        cursor: pointer;
+        white-space: nowrap;
+      }
+      .pop-item:hover {
+        background: rgba(118, 118, 128, 0.12);
+      }
+      .pop-item.sel {
+        background: rgba(0, 122, 255, 0.12);
+      }
+      .pop-swatches {
+        display: grid;
+        grid-template-columns: repeat(4, 28px);
+        gap: 8px;
+        padding: 6px;
+      }
+      #draw-layer {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        touch-action: none;
+      }
+      #draw-layer path {
+        pointer-events: none;
+      }
+      #world {
+        position: absolute;
+        inset: 0;
+        z-index: 0;
+      }
+      .topfade {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 280px;
+        z-index: 5;
+        background: linear-gradient(
+          180deg,
+          #f9f9f9 0%,
+          rgba(249, 249, 249, 0.92) 45%,
+          rgba(249, 249, 249, 0) 100%
+        );
+        pointer-events: none;
+      }
+      #object-layer {
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+      }
+      .note {
+        position: absolute;
+        width: 180px;
+        min-height: 150px;
+        padding: 12px;
+        border-radius: 4px 4px 16px 4px;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.14);
+        pointer-events: auto;
+      }
+      .note.selected {
+        box-shadow:
+          0 0 0 2px #007aff,
+          0 8px 24px rgba(0, 0, 0, 0.14);
+      }
+      .note .txt {
+        outline: none;
+        word-break: break-word;
+        min-height: 120px;
+      }
+      .tbox {
+        position: absolute;
+        min-width: 40px;
+        max-width: 60%;
+        padding: 6px 8px;
+        pointer-events: auto;
+      }
+      .tbox.selected {
+        box-shadow: 0 0 0 2px #007aff;
+        border-radius: 6px;
+      }
+      .tbox .txt {
+        outline: none;
+        word-break: break-word;
+        white-space: pre-wrap;
+      }
+    </style>
+    <style>
+      /* responsive-rescale whiteboard */
+      html,
+      body {
+        height: 100%;
+      }
+      body {
+        display: block !important;
+        min-height: 0 !important;
+        height: 100vh !important;
+        overflow: hidden !important;
+      }
+      .canvas {
+        width: 100% !important;
+        max-width: none !important;
+        height: 100vh !important;
+        min-height: 0 !important;
+        overflow: hidden !important;
+      }
+      .center-stack {
+        max-width: calc(100vw - 16px);
+      }
+      #tool-settings {
+        max-width: calc(100vw - 16px);
+        overflow-x: auto;
+        scrollbar-width: none;
+      }
+      .segmented {
+        max-width: 100%;
+      }
+      @media (max-width: 700px) {
+        .topbar {
+          position: static !important;
+          margin: 12px;
+          flex-wrap: wrap;
+          height: auto;
+        }
+        .top-left {
+          flex-wrap: wrap;
+        }
+        .search-pill {
+          width: 120px;
+        }
+        .title-center {
+          position: static !important;
+          transform: none !important;
+          margin: 8px auto;
+          text-align: center;
+          order: 3;
+          width: 100%;
+        }
+        .center-stack {
+          position: static !important;
+          transform: none !important;
+          margin: 8px auto;
+        }
+        #world {
+          position: absolute;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="canvas">
+      <div id="world">
+        <svg
+          id="draw-layer"
+          viewBox="0 0 1440 900"
+          preserveAspectRatio="none"
+        ></svg>
+        <div id="object-layer"></div>
+      </div>
+      <div class="topfade"></div>
+      <div class="topbar">
+        <div class="top-left">
+          <a class="pill menu" href="home.html"
+            ><span class="sf">􀯶</span><span>Menu</span></a
+          >
+          <div class="pill group">
+            <div class="icon-btn"><span class="sf">􀉈</span></div>
+            <div class="icon-btn"><span class="sf">􀉁</span></div>
+            <div class="icon-btn"><span class="sf">􀉃</span></div>
+          </div>
+          <div class="pill" style="width: 36px; justify-content: center">
+            <div class="icon-btn"><span class="sf">􀈑</span></div>
+          </div>
+        </div>
+        <div class="title-center">
+          <h1>Whiteboard</h1>
+          <p>Untitled board</p>
+        </div>
+        <div class="top-right">
+          <div class="circle-btn"><span class="sf">􀱍</span></div>
+          <div class="circle-btn"><span class="sf">􀱓</span></div>
+          <div class="search-pill">
+            <span class="sf">􀊫</span><span class="ph">Search</span
+            ><span class="sf">􀊰</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="center-stack">
+        <div
+          class="segmented"
+          id="tool-switcher"
+          style="width: 251px"
+          role="tablist"
+          aria-label="Tools"
+        >
+          <button
+            class="seg-item"
+            data-tool="0"
+            role="tab"
+            aria-selected="false"
+            title="Select"
+          >
+            <span class="sf">􀫌</span>
+          </button>
+          <button
+            class="seg-item"
+            data-tool="1"
+            role="tab"
+            aria-selected="false"
+            title="Sticky"
+          >
+            <span class="sf">􀈷</span>
+          </button>
+          <button
+            class="seg-item"
+            data-tool="2"
+            role="tab"
+            aria-selected="false"
+            title="Text"
+          >
+            <span class="sf">􂐦</span>
+          </button>
+          <button
+            class="seg-item"
+            data-tool="3"
+            role="tab"
+            aria-selected="false"
+            title="Shapes"
+          >
+            <span class="sf">􀐉</span>
+          </button>
+          <button
+            class="seg-item selected"
+            data-tool="4"
+            role="tab"
+            aria-selected="true"
+            title="Draw"
+          >
+            <span class="sf">􀉥</span>
+          </button>
+        </div>
+        <div class="row2">
+          <div id="tool-settings"></div>
+        </div>
+      </div>
+    </div>
+    <script>
+      (function () {
+        var CHEV = "􀆈";
+        var FONTS = ["SF Pro", "Inter", "New York", "Menlo"];
+        var SHAPES = [
+          { id: "sq", label: "Square" },
+          { id: "ci", label: "Circle" },
+          { id: "tr", label: "Triangle" },
+          { id: "di", label: "Diamond" },
+          { id: "ln", label: "Line" },
+        ];
+        var CURSORS = ["grab", "text", "text", "crosshair", "crosshair"];
+        var state = {
+          tool: 4,
+          size: [0, 50, 50, 60, 75], // persistent slider per tool (index 0 unused)
+          shape: 0,
+          drawStyle: 0,
+          drawColor: "#000000",
+          shapeColor: "#000000",
+          text: {
+            font: "Inter",
+            size: 16,
+            color: "#000000",
+            b: false,
+            i: false,
+            u: false,
+            open: null,
+          },
+          sticky: {
+            font: "Inter",
+            size: 16,
+            color: "#000000",
+            b: false,
+            i: false,
+            u: false,
+            fill: "#FFE57A",
+            open: null,
+          },
+          noteSeq: 0,
+          selNote: null,
+        };
+        var switcher = document.getElementById("tool-switcher");
+        var settings = document.getElementById("tool-settings");
+        var buttons = Array.prototype.slice.call(
+          switcher.querySelectorAll("[data-tool]"),
+        );
+        var canvas = document.querySelector(".canvas");
+        var objLayer = document.getElementById("object-layer");
+        function applyTextStyle(txt, m) {
+          txt.style.fontFamily = "'" + m.font + "', -apple-system, sans-serif";
+          txt.style.fontSize = m.size + "px";
+          txt.style.color = m.color;
+          txt.style.fontWeight = m.b ? "800" : "400";
+          txt.style.fontStyle = m.i ? "italic" : "normal";
+          txt.style.textDecoration = m.u ? "underline" : "none";
+        }
+        function syncSelectedNote() {
+          if (!state.selNote) return;
+          var note = objLayer.querySelector(
+            '[data-id="' + state.selNote + '"]',
+          );
+          if (!note) {
+            state.selNote = null;
+            return;
+          }
+          note.style.background = state.sticky.fill;
+          applyTextStyle(note.querySelector(".txt"), state.sticky);
+        }
+        function markSelected(id) {
+          state.selNote = id;
+          Array.prototype.forEach.call(
+            objLayer.querySelectorAll(".note, .tbox"),
+            function (n) {
+              n.classList.toggle("selected", n.getAttribute("data-id") === id);
+            },
+          );
+        }
+        function placeText(xPct, yPct) {
+          state.noteSeq += 1;
+          var box = document.createElement("div");
+          box.className = "tbox";
+          box.setAttribute("data-id", "n" + state.noteSeq);
+          box.style.left = Math.min(Math.max(xPct, 0), 90) + "%";
+          box.style.top = Math.min(Math.max(yPct, 0), 90) + "%";
+          var txt = document.createElement("div");
+          txt.className = "txt";
+          txt.contentEditable = "true";
+          txt.textContent = "Text";
+          box.appendChild(txt);
+          objLayer.appendChild(box);
+          applyTextStyle(txt, state.text);
+          clearStrokeSel();
+          markSelected(box.getAttribute("data-id"));
+          txt.focus();
+          try {
+            var range = document.createRange();
+            range.selectNodeContents(txt);
+            var sel = window.getSelection();
+            sel.removeAllRanges();
+            sel.addRange(range);
+          } catch (err) {}
+        }
+        function canvasPct(e) {
+          var r = objLayer.getBoundingClientRect();
+          return {
+            x: ((e.clientX - r.left) / r.width) * 100,
+            y: ((e.clientY - r.top) / r.height) * 100,
+          };
+        }
+        function placeSticky(xPct, yPct) {
+          state.noteSeq += 1;
+          var note = document.createElement("div");
+          note.className = "note";
+          note.setAttribute("data-id", "n" + state.noteSeq);
+          note.style.left = Math.min(Math.max(xPct, 0), 86) + "%";
+          note.style.top = Math.min(Math.max(yPct, 0), 76) + "%";
+          note.style.background = state.sticky.fill;
+          var txt = document.createElement("div");
+          txt.className = "txt";
+          txt.contentEditable = "true";
+          txt.textContent = "New note";
+          note.appendChild(txt);
+          objLayer.appendChild(note);
+          applyTextStyle(txt, state.sticky);
+          markSelected(note.getAttribute("data-id"));
+          txt.focus();
+          try {
+            var range = document.createRange();
+            range.selectNodeContents(txt);
+            var sel = window.getSelection();
+            sel.removeAllRanges();
+            sel.addRange(range);
+          } catch (err) {}
+        }
+        function uiCutoff() {
+          var cr = canvas.getBoundingClientRect();
+          var cut = 0;
+          var tb = document.querySelector(".topbar");
+          var cs = document.querySelector(".center-stack");
+          if (tb)
+            cut = Math.max(cut, tb.getBoundingClientRect().bottom - cr.top);
+          if (cs)
+            cut = Math.max(cut, cs.getBoundingClientRect().bottom - cr.top);
+          return cut + 8;
+        }
+        function inUiZone(e) {
+          return e.clientY - canvas.getBoundingClientRect().top < uiCutoff();
+        }
+        canvas.addEventListener("pointerdown", function (e) {
+          if (
+            inUiZone(e) ||
+            e.target.closest(".note, .tbox, .center-stack, .topbar")
+          )
+            return;
+          if (state.tool === 1)
+            placeSticky.apply(null, [canvasPct(e).x, canvasPct(e).y]);
+          else if (state.tool === 2) {
+            var pt = canvasPct(e);
+            placeText(pt.x, pt.y);
+          } else if (state.tool === 0) markSelected(null);
+        });
+        objLayer.addEventListener("pointerdown", function (e) {
+          var note = e.target.closest(".note, .tbox");
+          if (!note || state.tool !== 0) return;
+          markSelected(note.getAttribute("data-id"));
+          var r = objLayer.getBoundingClientRect();
+          var nr = note.getBoundingClientRect();
+          var dx = e.clientX - nr.left,
+            dy = e.clientY - nr.top;
+          try {
+            note.setPointerCapture(e.pointerId);
+          } catch (err) {}
+          var move = function (ev) {
+            var nx = ((ev.clientX - r.left - dx) / r.width) * 100;
+            var ny = ((ev.clientY - r.top - dy) / r.height) * 100;
+            note.style.left = Math.min(Math.max(nx, -8), 97) + "%";
+            note.style.top = Math.min(Math.max(ny, 0), 96) + "%";
+          };
+          var up = function () {
+            note.removeEventListener("pointermove", move);
+            note.removeEventListener("pointerup", up);
+            note.removeEventListener("pointercancel", up);
+          };
+          note.addEventListener("pointermove", move);
+          note.addEventListener("pointerup", up);
+          note.addEventListener("pointercancel", up);
+        });
+        var view = { x: 0, y: 0 };
+        var world = document.getElementById("world");
+        function applyView() {
+          world.style.transform =
+            "translate(" + view.x + "px," + view.y + "px)";
+        }
+        canvas.addEventListener("pointerdown", function (e) {
+          if (
+            inUiZone(e) ||
+            state.tool !== 0 ||
+            e.target.closest(".note, .tbox, .center-stack, .topbar")
+          )
+            return;
+          var sp = svgPos(e);
+          if (hitStroke(sp.x, sp.y)) return; // stroke drag owns this gesture
+          var track = {
+            sx: e.clientX,
+            sy: e.clientY,
+            ox: view.x,
+            oy: view.y,
+            moved: false,
+          };
+          canvas.style.cursor = "grabbing";
+          try {
+            canvas.setPointerCapture(e.pointerId);
+          } catch (err) {}
+          var move = function (ev) {
+            if (
+              Math.abs(ev.clientX - track.sx) +
+                Math.abs(ev.clientY - track.sy) >
+              4
+            )
+              track.moved = true;
+            if (!track.moved) return;
+            view.x = track.ox + (ev.clientX - track.sx);
+            view.y = track.oy + (ev.clientY - track.sy);
+            applyView();
+          };
+          var up = function () {
+            canvas.removeEventListener("pointermove", move);
+            canvas.removeEventListener("pointerup", up);
+            canvas.removeEventListener("pointercancel", up);
+            canvas.style.cursor =
+              state.tool === 0 ? "grab" : CURSORS[state.tool];
+          };
+          canvas.addEventListener("pointermove", move);
+          canvas.addEventListener("pointerup", up);
+          canvas.addEventListener("pointercancel", up);
+        });
+        objLayer.addEventListener("dblclick", function (e) {
+          var note = e.target.closest(".note, .tbox");
+          if (!note || state.tool !== 0) return;
+          var txt = note.querySelector(".txt");
+          if (!txt) return;
+          txt.contentEditable = "true";
+          txt.focus();
+          try {
+            var range = document.createRange();
+            range.selectNodeContents(txt);
+            var sel = window.getSelection();
+            sel.removeAllRanges();
+            sel.addRange(range);
+          } catch (err) {}
+        });
+        document.addEventListener("focusout", function (e) {
+          if (
+            e.target &&
+            e.target.classList &&
+            e.target.classList.contains("txt") &&
+            state.tool !== 1 &&
+            state.tool !== 2
+          ) {
+            e.target.contentEditable = "false";
+          }
+        });
+
+        function slider(toolIdx) {
+          var v = state.size[toolIdx];
+          return (
+            '<div class="seg-item selected" style="min-width:176px;padding:0 14px;gap:10px;justify-content:flex-start">' +
+            '<span class="sf">\u{100268}</span>' +
+            '<div class="slider-track" data-slider="' +
+            toolIdx +
+            '" data-value="' +
+            v +
+            '">' +
+            '<div class="slider-fill"></div><div class="slider-thumb"></div></div></div>'
+          );
+        }
+        function shapeBtn(i) {
+          var on = state.shape === i ? " selected" : "";
+          return (
+            '<div class="seg-item' +
+            on +
+            '" data-act="shape" data-i="' +
+            i +
+            '" title="' +
+            SHAPES[i].label +
+            '">' +
+            '<div class="shp shp-' +
+            SHAPES[i].id +
+            '"></div></div>'
+          );
+        }
+        function textControls(m, key) {
+          var s = "";
+          // font picker
+          s +=
+            '<div class="seg-item" data-act="fontbtn" data-m="' +
+            key +
+            '" style="padding:0 12px;gap:6px;font-size:14px" title="Font">' +
+            '<span style="font-family: &quot;' +
+            m.font +
+            '&quot;, -apple-system, sans-serif;">' +
+            m.font +
+            "</span>" +
+            '<span class="sf" style="font-size:13px">' +
+            CHEV +
+            "</span>";
+          if (m.open === "font") {
+            s +=
+              '<div class="pop">' +
+              FONTS.map(function (f) {
+                var sel = f === m.font ? " sel" : "";
+                return (
+                  '<div class="pop-item' +
+                  sel +
+                  '" data-act="fontpick" data-m="' +
+                  key +
+                  '" data-v="' +
+                  f +
+                  '"' +
+                  ' style="font-family: &quot;' +
+                  f +
+                  '&quot;, -apple-system, sans-serif;">' +
+                  f +
+                  "</div>"
+                );
+              }).join("") +
+              "</div>";
+          }
+          s += "</div>";
+          // size stepper
+          s +=
+            '<div class="seg-item" style="padding:0 8px;gap:2px" title="Font size">' +
+            '<div class="step-btn" data-act="dec" data-m="' +
+            key +
+            '">-</div>' +
+            '<div style="min-width:30px;text-align:center;font-size:15px">' +
+            m.size +
+            "</div>" +
+            '<div class="step-btn" data-act="inc" data-m="' +
+            key +
+            '">+</div></div>';
+          // text colour (native OS picker)
+          s +=
+            '<div class="seg-item" title="Text colour">' +
+            '<div class="color-dot"><div class="pip" style="background:' +
+            m.color +
+            '"></div></div>' +
+            '<input type="color" class="nativepick" data-npick="color" data-m="' +
+            key +
+            '" value="' +
+            m.color +
+            '" title="Text colour"/></div>';
+          // bold / italic / underline
+          s +=
+            '<div class="seg-item fmt fmt-b' +
+            (m.b ? " selected" : "") +
+            '" data-act="tgl" data-m="' +
+            key +
+            '" data-k="b" title="Bold">B</div>';
+          s +=
+            '<div class="seg-item fmt fmt-i' +
+            (m.i ? " selected" : "") +
+            '" data-act="tgl" data-m="' +
+            key +
+            '" data-k="i" title="Italic">i</div>';
+          s +=
+            '<div class="seg-item fmt fmt-u' +
+            (m.u ? " selected" : "") +
+            '" data-act="tgl" data-m="' +
+            key +
+            '" data-k="u" title="Underline">U</div>';
+          return s;
+        }
+        function stickyFillRow() {
+          var m = state.sticky;
+          return (
+            '<div class="segmented" style="padding:8px 16px" title="Sticky colour">' +
+            '<div class="seg-item" style="padding:0 6px" title="Sticky colour">' +
+            '<div class="swatch" style="background:' +
+            m.fill +
+            '" title="Sticky colour"></div>' +
+            '<input type="color" class="nativepick" data-npick="fill" value="' +
+            m.fill +
+            '" title="Sticky colour"/></div></div>'
+          );
+        }
+        var RENDER = [
+          function () {
+            return "";
+          }, // Select: no settings
+          function () {
+            return (
+              '<div class="segmented">' +
+              textControls(state.sticky, "sticky") +
+              "</div>" +
+              stickyFillRow()
+            );
+          },
+          function () {
+            return (
+              '<div class="segmented">' +
+              textControls(state.text, "text") +
+              "</div>"
+            );
+          },
+          function () {
+            return (
+              '<div class="segmented">' +
+              SHAPES.map(function (_, i) {
+                return shapeBtn(i);
+              }).join("") +
+              '<div class="seg-item" title="Shape colour">' +
+              '<div class="color-dot"><div class="pip" style="background:' +
+              state.shapeColor +
+              '"></div></div>' +
+              '<input type="color" class="nativepick" data-npick="shapeColor" value="' +
+              state.shapeColor +
+              '" title="Shape colour"/>' +
+              "</div>" +
+              slider(3) +
+              "</div>"
+            );
+          },
+          function () {
+            var a = state.drawStyle === 0 ? " selected" : "";
+            var b = state.drawStyle === 1 ? " selected" : "";
+            return (
+              '<div class="segmented">' +
+              '<div class="seg-item' +
+              a +
+              '" data-act="drawstyle" data-i="0" title="Pen"><span class="sf">\u{100911}</span></div>' +
+              '<div class="seg-item' +
+              b +
+              '" data-act="drawstyle" data-i="1" title="Marker"><span class="sf">\u{100987}</span></div>' +
+              '<div class="seg-item" title="Pen colour">' +
+              '<div class="color-dot"><div class="pip" style="background:' +
+              state.drawColor +
+              '"></div></div>' +
+              '<input type="color" class="nativepick" data-npick="drawColor" value="' +
+              state.drawColor +
+              '" title="Pen colour"/>' +
+              "</div>" +
+              slider(4) +
+              "</div>"
+            );
+          },
+        ];
+
+        function paintSlider(track) {
+          var v = Math.max(
+            0,
+            Math.min(100, parseFloat(track.getAttribute("data-value")) || 0),
+          );
+          track.setAttribute("data-value", v);
+          track.querySelector(".slider-fill").style.width = v + "%";
+          track.querySelector(".slider-thumb").style.left = v + "%";
+        }
+        function bindSliders() {
+          settings.querySelectorAll("[data-slider]").forEach(function (track) {
+            var idx = Number(track.getAttribute("data-slider"));
+            paintSlider(track);
+            track.addEventListener("pointerdown", function (e) {
+              track.setPointerCapture(e.pointerId);
+              var move = function (ev) {
+                var r = track.getBoundingClientRect();
+                var v = Math.max(
+                  0,
+                  Math.min(100, ((ev.clientX - r.left) / r.width) * 100),
+                );
+                track.setAttribute("data-value", v);
+                state.size[idx] = Math.round(v);
+                paintSlider(track);
+              };
+              move(e);
+              var up = function () {
+                track.removeEventListener("pointermove", move);
+                track.removeEventListener("pointerup", up);
+              };
+              track.addEventListener("pointermove", move);
+              track.addEventListener("pointerup", up);
+            });
+          });
+        }
+        function model(key) {
+          return key === "sticky" ? state.sticky : state.text;
+        }
+        settings.addEventListener("click", function (e) {
+          var el = e.target.closest("[data-act]");
+          if (!el) return;
+          var act = el.getAttribute("data-act");
+          var m = el.getAttribute("data-m")
+            ? model(el.getAttribute("data-m"))
+            : null;
+          if (act === "shape") state.shape = Number(el.getAttribute("data-i"));
+          else if (act === "drawstyle")
+            state.drawStyle = Number(el.getAttribute("data-i"));
+          else if (act === "fontbtn")
+            m.open = m.open === "font" ? null : "font";
+          else if (act === "fontpick") {
+            m.font = el.getAttribute("data-v");
+            m.open = null;
+          } else if (act === "dec") {
+            m.size = Math.max(8, m.size - 1);
+          } else if (act === "inc") {
+            m.size = Math.min(72, m.size + 1);
+          } else if (act === "tgl") {
+            var k = el.getAttribute("data-k");
+            m[k] = !m[k];
+          }
+          if (m) syncSelectedNote();
+          render();
+        });
+        function applyNativePick(el, v) {
+          var kind = el.getAttribute("data-npick");
+          if (kind === "drawColor") state.drawColor = v;
+          else if (kind === "shapeColor") state.shapeColor = v;
+          else if (kind === "fill") {
+            state.sticky.fill = v;
+            syncSelectedNote();
+          } else if (kind === "color") {
+            var mm = model(el.getAttribute("data-m"));
+            mm.color = v;
+            syncSelectedNote();
+          }
+          var vis = el.parentNode
+            ? el.parentNode.querySelector(".pip, .swatch")
+            : null;
+          if (vis) vis.style.background = v;
+        }
+        settings.addEventListener("input", function (e) {
+          var el = e.target;
+          if (!el || !el.getAttribute || el.getAttribute("data-npick") === null)
+            return;
+          applyNativePick(el, el.value);
+        });
+        settings.addEventListener("change", function (e) {
+          var el = e.target;
+          if (!el || !el.getAttribute || el.getAttribute("data-npick") === null)
+            return;
+          applyNativePick(el, el.value);
+          render();
+        });
+        document.addEventListener("pointerdown", function (e) {
+          if (!e.target.closest("#tool-settings")) {
+            if (
+              document.activeElement &&
+              document.activeElement.type === "color"
+            )
+              return; // native picker open
+            state.text.open = null;
+            state.sticky.open = null;
+            render();
+          }
+        });
+        function render() {
+          settings.innerHTML = RENDER[state.tool]();
+          bindSliders();
+        }
+        function select(i) {
+          state.tool = i;
+          clearStrokeSel();
+          buttons.forEach(function (b, j) {
+            var on = i === j;
+            b.classList.toggle("selected", on);
+            b.setAttribute("aria-selected", on ? "true" : "false");
+          });
+          render();
+          if (canvas) canvas.style.cursor = CURSORS[i];
+          var layer0 = document.getElementById("draw-layer");
+          if (layer0)
+            layer0.style.pointerEvents =
+              i === 4 || i === 3 || i === 0 ? "auto" : "none";
+          var notesLive = i !== 3 && i !== 4;
+          Array.prototype.forEach.call(
+            document.querySelectorAll(".note, .tbox"),
+            function (n) {
+              var isNote = n.classList.contains("note");
+              n.style.pointerEvents = notesLive ? "auto" : "none";
+              n.style.cursor =
+                i === 0
+                  ? "move"
+                  : (isNote && i === 1) || (!isNote && i === 2)
+                    ? "text"
+                    : "default";
+              var t = n.querySelector(".txt");
+              if (t)
+                t.contentEditable =
+                  (isNote && i === 1) || (!isNote && i === 2)
+                    ? "true"
+                    : "false";
+            },
+          );
+        }
+        buttons.forEach(function (b, i) {
+          b.addEventListener("click", function () {
+            select(i);
+          });
+        });
+        document.addEventListener("keydown", function (e) {
+          var editing =
+            e.target &&
+            (e.target.isContentEditable ||
+              /INPUT|TEXTAREA/.test(e.target.tagName));
+          if (e.key === "Escape" && editing) {
+            e.target.blur();
+            return;
+          }
+          if (editing) return;
+          if (e.key >= "1" && e.key <= "5") {
+            select(Number(e.key) - 1);
+            return;
+          }
+          var mod = e.metaKey || e.ctrlKey;
+          if (mod && (e.key === "c" || e.key === "C")) {
+            copySel(e);
+            return;
+          }
+          if (mod && (e.key === "x" || e.key === "X")) {
+            copySel(e);
+            deleteSel();
+            return;
+          }
+          if (mod && (e.key === "v" || e.key === "V")) {
+            if (clipboard) {
+              e.preventDefault();
+              pasteClipboard();
+            }
+            return;
+          }
+
+          if (
+            (e.key === "Delete" || e.key === "Backspace") &&
+            (state.selNote || selStroke)
+          ) {
+            deleteSel();
+          } else if (e.key === "Escape") {
+            markSelected(null);
+            clearStrokeSel();
+          }
+        });
+        var layer = document.getElementById("draw-layer");
+        var NS = "http://www.w3.org/2000/svg";
+        var current = null;
+        function strokeWidth() {
+          var w = 1 + (state.size[4] / 100) * 19;
+          return state.drawStyle === 1 ? w * 2 : w; // marker lays down a wider stroke
+        }
+        function svgPos(e) {
+          var r = layer.getBoundingClientRect();
+          return {
+            x: (e.clientX - r.left) * (1440 / r.width),
+            y: (e.clientY - r.top) * (900 / r.height),
+          };
+        }
+        var selStroke = null,
+          selHalo = null;
+        var clipboard = null,
+          pasteCount = 0;
+        function eachStroke(fn) {
+          Array.prototype.forEach.call(
+            layer.querySelectorAll("path[data-id]:not([data-halo])"),
+            fn,
+          );
+        }
+        function strokeById(id) {
+          return layer.querySelector('path[data-id="' + id + '"]');
+        }
+        function strokeXY(p) {
+          var m = /translate\(([^)]+)\)/.exec(
+            p.getAttribute("transform") || "",
+          );
+          return {
+            x: m ? parseFloat(m[1].split(/[ ,]+/)[0]) : 0,
+            y: m ? parseFloat(m[1].split(/[ ,]+/)[1] || 0) : 0,
+          };
+        }
+        function hitStroke(x, y) {
+          var best = null,
+            bestD = 1e9;
+          eachStroke(function (p) {
+            var t = strokeXY(p);
+            var len = p.getTotalLength();
+            var w = parseFloat(p.getAttribute("stroke-width")) || 2;
+            var tol = Math.max(10, w / 2 + 5);
+            var steps = Math.max(8, Math.min(60, Math.floor(len / 6)));
+            for (var i = 0; i <= steps; i++) {
+              var pt = p.getPointAtLength((len * i) / steps);
+              var d = Math.hypot(pt.x + t.x - x, pt.y + t.y - y);
+              if (d < tol && d < bestD) {
+                bestD = d;
+                best = p;
+              }
+            }
+          });
+          return best;
+        }
+        function clearStrokeSel() {
+          if (selHalo && selHalo.parentNode)
+            selHalo.parentNode.removeChild(selHalo);
+          selHalo = null;
+          selStroke = null;
+        }
+        function selectStroke(p) {
+          clearStrokeSel();
+          markSelected(null);
+          selStroke = p.getAttribute("data-id");
+          selHalo = p.cloneNode(false);
+          selHalo.removeAttribute("data-id");
+          selHalo.setAttribute("data-halo", "1");
+          selHalo.setAttribute("stroke", "#007AFF");
+          selHalo.setAttribute("opacity", "0.9");
+          selHalo.setAttribute(
+            "stroke-width",
+            (parseFloat(p.getAttribute("stroke-width")) || 2) + 7,
+          );
+          var t = p.getAttribute("transform");
+          if (t) selHalo.setAttribute("transform", t);
+          p.parentNode.insertBefore(selHalo, p);
+        }
+        function startStrokeDrag(e, p) {
+          var r = layer.getBoundingClientRect();
+          var o = strokeXY(p);
+          var kx = 1440 / r.width,
+            ky = 900 / r.height;
+          var sx = e.clientX,
+            sy = e.clientY;
+          try {
+            layer.setPointerCapture(e.pointerId);
+          } catch (err) {}
+          var move = function (ev) {
+            var t =
+              "translate(" +
+              (o.x + (ev.clientX - sx) * kx).toFixed(1) +
+              " " +
+              (o.y + (ev.clientY - sy) * ky).toFixed(1) +
+              ")";
+            p.setAttribute("transform", t);
+            if (selHalo) selHalo.setAttribute("transform", t);
+          };
+          var up = function () {
+            layer.removeEventListener("pointermove", move);
+            layer.removeEventListener("pointerup", up);
+            layer.removeEventListener("pointercancel", up);
+          };
+          layer.addEventListener("pointermove", move);
+          layer.addEventListener("pointerup", up);
+          layer.addEventListener("pointercancel", up);
+        }
+        layer.addEventListener("pointerdown", function (e) {
+          if (state.tool !== 0) return;
+          var p = svgPos(e);
+          var hit = hitStroke(p.x, p.y);
+          if (hit) {
+            selectStroke(hit);
+            startStrokeDrag(e, hit);
+          } else {
+            clearStrokeSel();
+            markSelected(null);
+          }
+        });
+        function copySel(e) {
+          if (state.selNote) {
+            var note = objLayer.querySelector(
+              '[data-id="' + state.selNote + '"]',
+            );
+            if (!note) return;
+            var txt = note.querySelector(".txt");
+            var isBox = note.classList.contains("tbox");
+            clipboard = {
+              kind: isBox ? "textbox" : "note",
+              fill: note.style.background || state.sticky.fill,
+              text: txt ? txt.innerHTML : "",
+              font: txt ? txt.style.fontFamily : "",
+              size: txt ? txt.style.fontSize : "16px",
+              color: txt ? txt.style.color : "#000",
+              weight: txt ? txt.style.fontWeight : "",
+              fst: txt ? txt.style.fontStyle : "",
+              deco: txt ? txt.style.textDecoration : "",
+              left: parseFloat(note.style.left) || 10,
+              top: parseFloat(note.style.top) || 10,
+            };
+            pasteCount = 0;
+            try {
+              e.clipboardData.setData(
+                "text/plain",
+                txt ? txt.innerText : "sticky note",
+              );
+            } catch (err) {}
+            e.preventDefault();
+          } else if (selStroke) {
+            var q = strokeById(selStroke);
+            if (!q) return;
+            var o = strokeXY(q);
+            clipboard = {
+              kind: "stroke",
+              d: q.getAttribute("d"),
+              stroke: q.getAttribute("stroke"),
+              width: q.getAttribute("stroke-width"),
+              cap: q.getAttribute("stroke-linecap"),
+              join: q.getAttribute("stroke-linejoin"),
+              opacity: q.getAttribute("opacity"),
+              tx: o.x,
+              ty: o.y,
+            };
+            pasteCount = 0;
+            e.preventDefault();
+          }
+        }
+        function deleteSel() {
+          if (state.selNote) {
+            var gone = objLayer.querySelector(
+              '[data-id="' + state.selNote + '"]',
+            );
+            if (gone) gone.remove();
+            markSelected(null);
+          } else if (selStroke) {
+            var q2 = strokeById(selStroke);
+            if (q2) q2.remove();
+            clearStrokeSel();
+          }
+        }
+        function pasteClipboard() {
+          if (!clipboard) return;
+          pasteCount += 1;
+          if (clipboard.kind === "note" || clipboard.kind === "textbox") {
+            state.noteSeq += 1;
+            var id = "n" + state.noteSeq;
+            var note = document.createElement("div");
+            note.className = clipboard.kind === "textbox" ? "tbox" : "note";
+            note.setAttribute("data-id", id);
+            note.style.left =
+              Math.min(clipboard.left + pasteCount * 2, 82) + "%";
+            note.style.top = Math.min(clipboard.top + pasteCount * 2, 72) + "%";
+            if (clipboard.kind === "note")
+              note.style.background = clipboard.fill;
+            var txt = document.createElement("div");
+            txt.className = "txt";
+            txt.contentEditable =
+              (clipboard.kind === "textbox" && state.tool === 2) ||
+              (clipboard.kind === "note" && state.tool === 1)
+                ? "true"
+                : "false";
+            txt.innerHTML = clipboard.text;
+            txt.style.fontFamily = clipboard.font;
+            txt.style.fontSize = clipboard.size;
+            txt.style.color = clipboard.color;
+            txt.style.fontWeight = clipboard.weight;
+            txt.style.fontStyle = clipboard.fst;
+            txt.style.textDecoration = clipboard.deco;
+            note.appendChild(txt);
+            objLayer.appendChild(note);
+            var live = state.tool !== 3 && state.tool !== 4;
+            note.style.pointerEvents = live ? "auto" : "none";
+            markSelected(id);
+          } else if (clipboard.kind === "stroke") {
+            state.strokeSeq = (state.strokeSeq || 0) + 1;
+            var np = document.createElementNS(NS, "path");
+            np.setAttribute("data-id", "s" + state.strokeSeq);
+            np.setAttribute("d", clipboard.d);
+            np.setAttribute("fill", "none");
+            np.setAttribute("stroke", clipboard.stroke);
+            np.setAttribute("stroke-width", clipboard.width);
+            np.setAttribute("stroke-linecap", clipboard.cap || "round");
+            np.setAttribute("stroke-linejoin", clipboard.join || "round");
+            if (clipboard.opacity)
+              np.setAttribute("opacity", clipboard.opacity);
+            np.setAttribute(
+              "transform",
+              "translate(" +
+                (clipboard.tx + pasteCount * 24) +
+                " " +
+                (clipboard.ty + pasteCount * 24) +
+                ")",
+            );
+            layer.appendChild(np);
+            selectStroke(np);
+          }
+        }
+        function shapeWidth() {
+          return 1 + (state.size[3] / 100) * 19;
+        }
+        function shapePath(kind, x1, y1, x2, y2) {
+          var xa = Math.min(x1, x2),
+            xb = Math.max(x1, x2);
+          var ya = Math.min(y1, y2),
+            yb = Math.max(y1, y2);
+          var cx = (xa + xb) / 2,
+            cy = (ya + yb) / 2;
+          var f = function (n) {
+            return n.toFixed(1);
+          };
+          if (kind === 0)
+            return (
+              "M " +
+              f(xa) +
+              " " +
+              f(ya) +
+              " H " +
+              f(xb) +
+              " V " +
+              f(yb) +
+              " H " +
+              f(xa) +
+              " Z"
+            );
+          if (kind === 1) {
+            var rx = (xb - xa) / 2,
+              ry = (yb - ya) / 2;
+            if (rx < 0.5 || ry < 0.5)
+              return (
+                "M " + f(cx) + " " + f(cy) + " L " + f(cx + 0.6) + " " + f(cy)
+              );
+            return (
+              "M " +
+              f(cx - rx) +
+              " " +
+              f(cy) +
+              " A " +
+              f(rx) +
+              " " +
+              f(ry) +
+              " 0 1 0 " +
+              f(cx + rx) +
+              " " +
+              f(cy) +
+              " A " +
+              f(rx) +
+              " " +
+              f(ry) +
+              " 0 1 0 " +
+              f(cx - rx) +
+              " " +
+              f(cy) +
+              " Z"
+            );
+          }
+          if (kind === 2)
+            return (
+              "M " +
+              f(cx) +
+              " " +
+              f(ya) +
+              " L " +
+              f(xb) +
+              " " +
+              f(yb) +
+              " L " +
+              f(xa) +
+              " " +
+              f(yb) +
+              " Z"
+            );
+          if (kind === 3)
+            return (
+              "M " +
+              f(cx) +
+              " " +
+              f(ya) +
+              " L " +
+              f(xb) +
+              " " +
+              f(cy) +
+              " L " +
+              f(cx) +
+              " " +
+              f(yb) +
+              " L " +
+              f(xa) +
+              " " +
+              f(cy) +
+              " Z"
+            );
+          return "M " + f(x1) + " " + f(y1) + " L " + f(x2) + " " + f(y2);
+        }
+        layer.addEventListener("pointerdown", function (e) {
+          if (state.tool !== 3) return;
+          e.preventDefault();
+          try {
+            layer.setPointerCapture(e.pointerId);
+          } catch (err) {}
+          var start = svgPos(e);
+          var kind = state.shape;
+          var el = document.createElementNS(NS, "path");
+          state.strokeSeq = (state.strokeSeq || 0) + 1;
+          el.setAttribute("data-id", "s" + state.strokeSeq);
+          el.setAttribute(
+            "d",
+            shapePath(kind, start.x, start.y, start.x + 1, start.y + 1),
+          );
+          el.setAttribute("fill", "none");
+          el.setAttribute("stroke", state.shapeColor);
+          el.setAttribute("stroke-width", shapeWidth().toFixed(1));
+          el.setAttribute("stroke-linecap", kind === 4 ? "round" : "square");
+          el.setAttribute("stroke-linejoin", "miter");
+          layer.appendChild(el);
+          var cur = { x: start.x, y: start.y };
+          var move = function (ev) {
+            cur = svgPos(ev);
+            var ax = start.x,
+              ay = start.y,
+              bx = cur.x,
+              by = cur.y;
+            if (ev.shiftKey && (kind === 0 || kind === 1)) {
+              var w = Math.abs(bx - ax),
+                h = Math.abs(by - ay);
+              var m = Math.max(w, h);
+              bx = ax + (bx < ax ? -m : m);
+              by = ay + (by < ay ? -m : m);
+            }
+            el.setAttribute("d", shapePath(kind, ax, ay, bx, by));
+          };
+          var up = function () {
+            var done = shapePath(kind, start.x, start.y, cur.x, cur.y);
+            if (kind === 4) {
+              var len = Math.hypot(cur.x - start.x, cur.y - start.y);
+              if (len < 8) {
+                el.remove();
+              }
+            } else if (
+              Math.abs(cur.x - start.x) < 8 ||
+              Math.abs(cur.y - start.y) < 8
+            ) {
+              var cx = start.x,
+                cy = start.y;
+              el.setAttribute(
+                "d",
+                shapePath(kind, cx - 60, cy - 45, cx + 60, cy + 45),
+              );
+            } else {
+              el.setAttribute("d", done);
+            }
+            if (el.parentNode) selectStroke(el);
+            layer.removeEventListener("pointermove", move);
+            layer.removeEventListener("pointerup", up);
+            layer.removeEventListener("pointercancel", up);
+          };
+          layer.addEventListener("pointermove", move);
+          layer.addEventListener("pointerup", up);
+          layer.addEventListener("pointercancel", up);
+        });
+        layer.addEventListener("pointerdown", function (e) {
+          if (state.tool !== 4) return;
+          e.preventDefault();
+          try {
+            layer.setPointerCapture(e.pointerId);
+          } catch (err) {}
+          var p = svgPos(e);
+          current = document.createElementNS(NS, "path");
+          state.strokeSeq = (state.strokeSeq || 0) + 1;
+          current.setAttribute("data-id", "s" + state.strokeSeq);
+          current.setAttribute(
+            "d",
+            "M " + p.x.toFixed(1) + " " + p.y.toFixed(1),
+          );
+          current.setAttribute("fill", "none");
+          current.setAttribute("stroke", state.drawColor);
+          current.setAttribute("stroke-width", strokeWidth().toFixed(1));
+          current.setAttribute("stroke-linecap", "round");
+          current.setAttribute("stroke-linejoin", "round");
+          if (state.drawStyle === 1) current.setAttribute("opacity", "0.45");
+          layer.appendChild(current);
+          var move = function (ev) {
+            if (!current) return;
+            var q = svgPos(ev);
+            current.setAttribute(
+              "d",
+              current.getAttribute("d") +
+                " L " +
+                q.x.toFixed(1) +
+                " " +
+                q.y.toFixed(1),
+            );
+          };
+          var up = function () {
+            current = null;
+            layer.removeEventListener("pointermove", move);
+            layer.removeEventListener("pointerup", up);
+            layer.removeEventListener("pointercancel", up);
+          };
+          layer.addEventListener("pointermove", move);
+          layer.addEventListener("pointerup", up);
+          layer.addEventListener("pointercancel", up);
+        });
+        (function () {
+          state.noteSeq = 1;
+          var sn = document.createElement("div");
+          sn.className = "note";
+          sn.setAttribute("data-id", "n1");
+          sn.style.left = "6%";
+          sn.style.top = "24%";
+          sn.style.background = "#FFE57A";
+          var st = document.createElement("div");
+          st.className = "txt";
+          st.contentEditable = "false";
+          st.textContent = "Methods revision";
+          st.style.fontFamily = "'Inter',-apple-system,sans-serif";
+          st.style.fontSize = "28px";
+          st.style.fontWeight = "800";
+          st.style.color = "#000";
+          sn.appendChild(st);
+          objLayer.appendChild(sn);
+        })();
+        select(4); // Draw is selected in the design
+      })();
+    </script>
+  </body>
+</html>

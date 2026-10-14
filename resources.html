@@ -1,0 +1,559 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Resources</title>
+    <style>
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        background: #f9f9f9;
+        font-family:
+          "SF Pro",
+          -apple-system,
+          BlinkMacSystemFont,
+          sans-serif;
+        display: flex;
+        align-items: flex-start;
+        justify-content: center;
+        min-height: 100vh;
+        padding: 0;
+        -webkit-font-smoothing: antialiased;
+      }
+      .canvas {
+        width: 100%;
+        max-width: 1440px;
+        height: 100vh;
+        min-height: 900px;
+        background: #f9f9f9;
+        border-radius: 0;
+        position: relative;
+        overflow: hidden;
+        box-shadow: none;
+        color: rgba(0, 0, 0, 0.85);
+      }
+      .sf {
+        font-family:
+          "SF Pro",
+          -apple-system,
+          sans-serif;
+        font-weight: 510;
+        line-height: 1;
+        display: inline-block;
+      }
+      .side {
+        position: absolute;
+        left: 10px;
+        top: 10px;
+        width: 240px;
+        height: 880px;
+        background: rgba(245, 245, 245, 0.85);
+        backdrop-filter: blur(20px);
+        border-radius: 18px;
+        box-shadow: 0 8px 40px rgba(0, 0, 0, 0.12);
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+      }
+      .newpill {
+        margin: 10px 10px 0;
+        background: #fff;
+        border-radius: 100px;
+        height: 33px;
+        display: flex;
+        align-items: center;
+        padding: 4px;
+        box-shadow: 0 0 0 0.5px #ebebeb;
+      }
+      .newpill .ic {
+        width: 28px;
+        height: 25px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 15px;
+        font-weight: 510;
+      }
+      .newpill span.t {
+        flex: 1;
+        text-align: right;
+        padding-right: 12px;
+        font-size: 15px;
+      }
+      .nav {
+        padding: 10px 10px 0;
+        display: flex;
+        flex-direction: column;
+      }
+      .nrow {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        height: 40px;
+        padding: 0 10px 0 8px;
+        border-radius: 8px;
+        font-size: 15px;
+      }
+      .nrow .sf {
+        width: 24px;
+        text-align: center;
+        font-size: 15px;
+      }
+      .nrow.sel {
+        background: rgba(0, 0, 0, 0.11);
+        background-blend-mode: multiply;
+      }
+      .nrow.sel .sf {
+        color: #007aff;
+      }
+      .side-foot {
+        margin-top: auto;
+        padding: 10px;
+        border-top: 0.5px solid rgba(0, 0, 0, 0.06);
+      }
+      .side-foot .sf:last-child {
+        font-size: 15px;
+        color: rgba(0, 0, 0, 0.6);
+      }
+      .topbar {
+        position: absolute;
+        left: 265px;
+        right: 17px;
+        top: 23px;
+        display: flex;
+        justify-content: flex-end;
+      }
+      .search {
+        width: 146px;
+        height: 36px;
+        background: #fff;
+        box-shadow: 0 0 0 0.4px #ebebeb;
+        border-radius: 999px;
+        display: flex;
+        align-items: center;
+        padding: 0 10px 0 12px;
+        gap: 6px;
+        font-size: 13px;
+        color: rgba(60, 60, 67, 0.6);
+      }
+      .search .ph {
+        color: #bfbfbf;
+        flex: 1;
+      }
+      .search input {
+        border: 0;
+        outline: 0;
+        background: transparent;
+        font: inherit;
+        color: #000;
+        flex: 1;
+        min-width: 0;
+      }
+      h1.home {
+        position: absolute;
+        left: 273px;
+        top: 18px;
+        font-size: 34px;
+        font-weight: 700;
+        letter-spacing: 0.4px;
+        color: #000;
+      }
+      .wrap {
+        margin-left: 273px;
+        padding: 80px 25px 32px;
+        display: flex;
+        flex-direction: column;
+        gap: 21px;
+      }
+      .sec {
+        position: relative;
+        border-radius: 20px;
+        overflow: hidden;
+      }
+      .sec .accent {
+        position: absolute;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        width: 24px;
+      }
+      .sec .inner {
+        background: #fff;
+        padding: 16px 18px 14px;
+        margin-left: 24px;
+      }
+      .sec h2 {
+        font-size: 20px;
+        font-weight: 700;
+        color: #000;
+        margin-bottom: 2px;
+      }
+      .sec .sub {
+        font-size: 12px;
+        color: #8e8e93;
+        margin-bottom: 12px;
+      }
+      .rbooks {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 14px;
+        margin-bottom: 4px;
+      }
+      .rbook {
+        border-radius: 10px;
+        color: #fff;
+        padding: 12px;
+        font-size: 15px;
+        font-weight: 800;
+        line-height: 17px;
+        box-shadow: 0 4px 23px rgba(0, 0, 0, 0.1);
+        min-height: 120px;
+        position: relative;
+        overflow: hidden;
+      }
+      .rbook small {
+        display: block;
+        font-size: 9px;
+        font-weight: 400;
+        margin-top: 2px;
+      }
+      .rlink {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 10px 4px;
+        border-top: 0.5px solid rgba(0, 0, 0, 0.06);
+        font-size: 14px;
+        font-weight: 600;
+        color: #000;
+      }
+      .rlink small {
+        display: block;
+        font-weight: 400;
+        font-size: 11px;
+        color: #8e8e93;
+      }
+      .rlink .go {
+        margin-left: auto;
+        width: 26px;
+        height: 26px;
+        border-radius: 999px;
+        background: #f4f4f6;
+        position: relative;
+        flex-shrink: 0;
+      }
+      .rlink .go:before {
+        content: "";
+        position: absolute;
+        left: 9px;
+        top: 7px;
+        width: 7px;
+        height: 7px;
+        border-top: 2px solid #8e8e93;
+        border-right: 2px solid #8e8e93;
+        transform: rotate(45deg);
+      }
+      .nrow,
+      .rlink {
+        color: inherit;
+        text-decoration: none;
+      }
+      .empty {
+        display: none;
+        font-size: 13px;
+        color: #8e8e93;
+        padding: 12px 4px;
+      }
+      .rlink {
+        cursor: pointer;
+      }
+      .rprev {
+        margin: 0 0 8px;
+        background: #f8f8fa;
+        border-radius: 10px;
+        padding: 10px 12px;
+        font-size: 12.5px;
+        line-height: 1.6;
+        color: #1a1a1a;
+        white-space: pre-line;
+      }
+      .rprev:focus {
+        outline: none;
+        box-shadow: 0 0 0 1.5px #34c759;
+        background: #fff;
+      }
+    </style>
+    <style>
+      /* responsive-rescale resources */
+      html,
+      body {
+        height: 100%;
+      }
+      body {
+        display: block !important;
+        min-height: 0 !important;
+        height: 100vh !important;
+        overflow: hidden !important;
+      }
+      .canvas {
+        width: 100% !important;
+        max-width: none !important;
+        height: 100vh !important;
+        min-height: 0 !important;
+        overflow-y: auto !important;
+        overflow-x: hidden !important;
+        padding-bottom: 32px;
+      }
+      .side {
+        position: fixed !important;
+        left: 10px !important;
+        top: 10px !important;
+        bottom: 10px !important;
+        height: auto !important;
+        width: 240px !important;
+        z-index: 20;
+      }
+      @media (max-width: 860px) {
+        .side {
+          left: 0 !important;
+          right: 0 !important;
+          top: 0 !important;
+          bottom: auto !important;
+          width: auto !important;
+          min-height: 0;
+          flex-direction: row;
+          align-items: center;
+          padding: 6px 10px;
+          gap: 8px;
+          border-radius: 0 0 18px 18px;
+        }
+        .newpill {
+          display: none;
+        }
+        .side .nav {
+          flex-direction: row;
+          flex: 1;
+          overflow-x: auto;
+          padding: 0;
+        }
+        .side .nav .nrow {
+          white-space: nowrap;
+          height: 36px;
+          flex-shrink: 0;
+        }
+        .side-foot {
+          margin: 0;
+          padding: 0;
+          border: 0;
+        }
+        h1.home {
+          left: 16px;
+          top: 84px;
+          font-size: 28px;
+        }
+        .topbar {
+          left: auto;
+          right: 16px;
+          top: 88px;
+        }
+        .wrap {
+          margin-left: 0;
+          padding: 140px 16px 32px;
+        }
+        .rbooks {
+          grid-template-columns: minmax(0, 1fr);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="canvas">
+      <div class="side">
+        <div class="newpill">
+          <span class="ic sf">􀅼</span><span class="t">New</span>
+        </div>
+        <div class="nav">
+          <a class="nrow" href="home.html"><span class="sf">􀎞</span>Home</a>
+          <a class="nrow" href="calendar.html"
+            ><span class="sf">􀉉</span>Calendar</a
+          >
+          <div class="nrow"><span class="sf">􀣔</span>Recent</div>
+          <a class="nrow" href="files.html"><span class="sf">􀈕</span>Files</a>
+          <div class="nrow"><span class="sf">􀿫</span>Apps</div>
+          <a class="nrow sel" href="resources.html"
+            ><span class="sf">􀈷</span>Resources</a
+          >
+          <div class="nrow"><span class="sf">􀈑</span>Trash</div>
+        </div>
+        <div class="side-foot">
+          <a class="nrow" href="settings-appearance.html"
+            ><span class="sf">􀍟</span>Settings<span
+              class="sf"
+              style="margin-left: auto"
+              >􀉭</span
+            ></a
+          >
+        </div>
+      </div>
+
+      <h1 class="home">Resources</h1>
+      <div class="topbar">
+        <div class="search">
+          <span class="sf">􀊫</span
+          ><input id="q" placeholder="Search" aria-label="Search" /><span
+            class="sf"
+            >􀊰</span
+          >
+        </div>
+      </div>
+      <div class="wrap">
+        <div class="sec">
+          <div class="accent" style="background: #ff9500"></div>
+          <div class="inner">
+            <h2>Textbooks</h2>
+            <div class="sub">3 textbooks</div>
+            <div class="rbooks">
+              <div
+                class="rbook"
+                data-name="mathematics australia mathematical methods haese"
+                style="background: #ff9500"
+              >
+                Mathematics for Australia<small
+                  >Mathematical Methods - Haese</small
+                >
+              </div>
+              <div
+                class="rbook"
+                data-name="mathematics australia specialist mathematics haese"
+                style="background: #6155f5"
+              >
+                Mathematics for Australia<small
+                  >Specialist Mathematics - Haese</small
+                >
+              </div>
+              <div
+                class="rbook"
+                data-name="physics australia units 3 and 4 oxford"
+                style="background: #007aff"
+              >
+                Physics for Australia<small>Units 3 and 4 - Oxford</small>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="sec">
+          <div class="accent" style="background: #34c759"></div>
+          <div class="inner">
+            <h2>Study links</h2>
+            <div class="sub">
+              Tap a link to open its notes - click the text to edit
+            </div>
+            <div id="reslist">
+              <div
+                class="ritem"
+                data-name="vcaa study designs official curriculum"
+              >
+                <div class="rlink">
+                  <div>
+                    VCAA Study Designs<small
+                      >Official curriculum - vcaa.vic.edu.au</small
+                    >
+                  </div>
+                  <span class="go"></span>
+                </div>
+                <div
+                  class="rprev"
+                  contenteditable="true"
+                  spellcheck="false"
+                  hidden
+                >
+                  Study design notes: Methods Units 3 and 4 covers functions,
+                  calculus and probability. Specialist adds vectors, complex
+                  numbers and proof. Check the VCAA site for the current design
+                  and formula sheet.
+                </div>
+              </div>
+              <div
+                class="ritem"
+                data-name="past exams vcaa exam papers solutions"
+              >
+                <div class="rlink">
+                  <div>
+                    Past Exams<small>VCAA exam papers with solutions</small>
+                  </div>
+                  <span class="go"></span>
+                </div>
+                <div
+                  class="rprev"
+                  contenteditable="true"
+                  spellcheck="false"
+                  hidden
+                >
+                  Past papers plan: one timed paper per week from September.
+                  Mark harshly against the solutions, log every lost method
+                  mark, redo missed questions closed-book the next day.
+                </div>
+              </div>
+              <div
+                class="ritem"
+                data-name="formula sheets approved exam 1 and 2"
+              >
+                <div class="rlink">
+                  <div>
+                    Formula Sheets<small>Approved exam 1 and 2 sheets</small>
+                  </div>
+                  <span class="go"></span>
+                </div>
+                <div
+                  class="rprev"
+                  contenteditable="true"
+                  spellcheck="false"
+                  hidden
+                >
+                  Formula sheet notes: exam 1 allows the VCAA sheet only. Learn
+                  which formulas are NOT on it - quotient rule, log laws and the
+                  sine rule area form must come from memory.
+                </div>
+              </div>
+            </div>
+            <div class="empty" id="nohits">No resources match your search.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script>
+      (function () {
+        var box = document.getElementById("q"),
+          items = Array.prototype.slice.call(
+            document.querySelectorAll(".rbooks .rbook, #reslist .ritem"),
+          ),
+          none = document.getElementById("nohits");
+        if (box) {
+          box.addEventListener("input", function () {
+            var s = box.value.toLowerCase(),
+              n = 0;
+            items.forEach(function (el) {
+              var hit = el.getAttribute("data-name").indexOf(s) > -1;
+              el.style.display = hit ? "" : "none";
+              if (hit) n++;
+            });
+            none.style.display = n ? "none" : "block";
+          });
+        }
+        Array.prototype.forEach.call(
+          document.querySelectorAll("#reslist .rlink"),
+          function (r) {
+            r.addEventListener("click", function () {
+              var p = r.parentNode.querySelector(".rprev");
+              if (p) p.hidden = !p.hidden;
+            });
+          },
+        );
+      })();
+    </script>
+  </body>
+</html>

@@ -1,0 +1,668 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Title</title>
+    <style>
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        background: #f1f1f4;
+        font-family:
+          "SF Pro",
+          -apple-system,
+          BlinkMacSystemFont,
+          sans-serif;
+        display: flex;
+        align-items: flex-start;
+        justify-content: center;
+        min-height: 100vh;
+        padding: 0;
+        -webkit-font-smoothing: antialiased;
+      }
+      .canvas {
+        width: 100%;
+        max-width: 1440px;
+        height: 100vh;
+        min-height: 900px;
+        background: #f1f1f4;
+        border-radius: 0;
+        position: relative;
+        overflow: hidden;
+        box-shadow: none;
+      }
+      .sf {
+        font-family:
+          "SF Pro",
+          -apple-system,
+          sans-serif;
+        font-weight: 510;
+        display: inline-block;
+        line-height: 1;
+      }
+      .pill {
+        background: #fff;
+        box-shadow: 0 0 0 0.4px #ebebeb;
+        border-radius: 81px;
+        display: flex;
+        align-items: center;
+      }
+      .menupill {
+        position: absolute;
+        left: 28px;
+        top: 30px;
+        height: 36px;
+        min-width: 69px;
+        padding: 0 12px 0 8px;
+        gap: 4px;
+        font-size: 13.77px;
+      }
+      .menupill {
+        cursor: pointer;
+      }
+      .drop {
+        position: absolute;
+        top: calc(100% + 8px);
+        left: 0;
+        background: #fff;
+        border-radius: 14px;
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.16);
+        padding: 6px;
+        z-index: 50;
+        min-width: 190px;
+      }
+      .drop a {
+        display: block;
+        padding: 8px 10px;
+        border-radius: 8px;
+        font-size: 14px;
+        color: #1a1a1a;
+        text-decoration: none;
+        white-space: nowrap;
+      }
+      .drop a:hover {
+        background: rgba(118, 118, 128, 0.12);
+      }
+      .btngroup {
+        position: absolute;
+        left: 107px;
+        top: 30px;
+        height: 36px;
+        width: 130px;
+        padding: 0 5px;
+        justify-content: space-around;
+        font-size: 13.77px;
+      }
+      .trashpill {
+        position: absolute;
+        left: 245px;
+        top: 30px;
+        height: 36px;
+        width: 36px;
+        justify-content: center;
+        font-size: 13.77px;
+      }
+      .undopill,
+      .redopill {
+        position: absolute;
+        top: 30px;
+        height: 36px;
+        width: 36px;
+        justify-content: center;
+        font-size: 13.77px;
+        color: #727272;
+      }
+      .undopill {
+        right: 220px;
+      }
+      .redopill {
+        right: 178px;
+      }
+      .search {
+        position: absolute;
+        right: 16px;
+        top: 30px;
+        width: 146px;
+        height: 36px;
+        padding: 0 10px 0 12px;
+        gap: 6px;
+        font-size: 13px;
+        color: rgba(60, 60, 67, 0.6);
+      }
+      .search .ph {
+        color: #bfbfbf;
+        flex: 1;
+      }
+      .titles {
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 34px;
+        text-align: center;
+        pointer-events: none;
+      }
+      .titles .t,
+      .titles .s {
+        pointer-events: auto;
+        display: table;
+        margin-left: auto;
+        margin-right: auto;
+      }
+      .titles .t {
+        font-size: 20px;
+        font-weight: 590;
+        color: #1a1a1a;
+      }
+      .titles .s {
+        font-size: 10px;
+        font-weight: 510;
+        color: #727272;
+        margin-top: 2px;
+      }
+      .formatbar {
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+        top: 86px;
+        width: max-content;
+        max-width: 90%;
+        height: 50px;
+        background: #e9e9ee;
+        border-radius: 100px;
+        display: flex;
+        align-items: stretch;
+        padding: 2px;
+        gap: 4px;
+        font-size: 13px;
+        overflow: visible;
+        white-space: nowrap;
+      }
+      .formatbar > span {
+        display: flex;
+        align-items: center;
+        padding: 0 10px;
+        border-radius: 1000px;
+      }
+      .formatbar .b {
+        font-size: 15px;
+        font-weight: 860;
+      }
+      .formatbar .i {
+        font-size: 15px;
+        font-style: italic;
+      }
+      .formatbar .u {
+        font-size: 15px;
+        text-decoration: underline;
+      }
+      .wheel {
+        width: 19px;
+        height: 19px;
+        flex-shrink: 0;
+        align-self: center;
+        border-radius: 9999px;
+        background: conic-gradient(
+          from 0deg,
+          #e7e040 0deg,
+          #eeaa3c 45deg,
+          #e8403b 90deg,
+          #b33ed5 132deg,
+          #694ae8 182deg,
+          #3ccae7 231deg,
+          #3ce885 270deg,
+          #89e743 313deg,
+          #e7e040 360deg
+        );
+      }
+      .page {
+        position: absolute;
+        left: 219px;
+        top: 154px;
+        width: 1023px;
+        height: 746px;
+        background: #fff;
+        border-radius: 8px;
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+      }
+      .page .body {
+        position: absolute;
+        left: 75px;
+        right: 74px;
+        top: 80px;
+        font-family: Inter, "SF Pro", sans-serif;
+        font-size: 20px;
+        line-height: 18px;
+        color: #000;
+      }
+      a.pill {
+        color: inherit;
+        text-decoration: none;
+      }
+      .formatbar > span {
+        cursor: pointer;
+      }
+      [contenteditable] {
+        outline: none;
+      }
+      .page .ptitle {
+        display: block;
+        text-align: center;
+        font-size: 26px;
+        line-height: 30px;
+        margin-bottom: 16px;
+      }
+    </style>
+    <style>
+      /* responsive-rescale editor */
+      html,
+      body {
+        height: 100%;
+      }
+      body {
+        display: block !important;
+        min-height: 0 !important;
+        height: 100vh !important;
+        overflow: hidden !important;
+      }
+      .canvas {
+        width: 100% !important;
+        max-width: none !important;
+        height: 100vh !important;
+        min-height: 0 !important;
+        overflow-y: auto !important;
+        overflow-x: hidden !important;
+        padding-bottom: 40px;
+      }
+      .page {
+        position: relative;
+        left: auto;
+        right: auto;
+        top: auto;
+        transform: none;
+        width: min(794px, calc(100% - 32px));
+        max-width: 794px;
+        height: auto;
+        aspect-ratio: 210/297;
+        margin: 150px auto 48px;
+      }
+      .page .body {
+        position: static;
+        left: auto;
+        right: auto;
+        top: auto;
+        padding: 76px clamp(20px, 9.5%, 75px) 96px;
+        background: transparent;
+        overflow-wrap: break-word;
+      }
+      .page .body * {
+        background-color: transparent !important;
+      }
+      .formatbar {
+        max-width: calc(100vw - 32px);
+        overflow-x: auto;
+        scrollbar-width: none;
+      }
+      @media (max-width: 700px) {
+        .menupill {
+          left: 12px;
+          top: 12px;
+        }
+        .btngroup {
+          left: 92px;
+          top: 12px;
+          width: 110px;
+        }
+        .trashpill {
+          left: 210px;
+          top: 12px;
+        }
+        .undopill {
+          right: 64px;
+          top: 12px;
+        }
+        .redopill {
+          right: 20px;
+          top: 12px;
+        }
+        .search {
+          display: none;
+        }
+        .titles {
+          top: 60px;
+        }
+        .formatbar {
+          top: 110px;
+          font-size: 12px;
+          padding: 2px 6px;
+          gap: 4px;
+          height: 50px;
+        }
+        .page {
+          margin: 176px auto 32px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="canvas">
+      <a class="pill menupill" href="home.html"
+        ><span class="sf" style="font-weight: 590">􀯶</span><span>Menu</span></a
+      >
+      <div class="pill btngroup">
+        <span class="sf">􀉈</span><span class="sf">􀉁</span
+        ><span class="sf">􀉃</span>
+      </div>
+      <div class="pill trashpill"><span class="sf">􀈑</span></div>
+      <div class="pill undopill"><span class="sf">􀱍</span></div>
+      <div class="pill redopill"><span class="sf">􀱓</span></div>
+      <div class="pill search">
+        <span class="sf">􀊫</span><span class="ph">Search</span
+        ><span class="sf" style="font-size: 14px">􀊰</span>
+      </div>
+      <div class="titles">
+        <div class="t">Title</div>
+        <div class="s">Subtitle</div>
+      </div>
+      <div class="formatbar">
+        <span>Inter</span><span class="sf">􀆈</span> <span>16</span
+        ><span class="sf">􀆏</span> <span class="b">B</span
+        ><span class="i">i</span><span class="u">U</span>
+        <span class="wheel"></span>
+        <span class="sf">􀋳</span><span class="sf">􀋴</span
+        ><span class="sf">􀷾</span><span class="sf">􀏣</span
+        ><span class="sf">􀘽</span
+        ><span class="sf" style="font-weight: 590">􀈂</span>
+      </div>
+      <div class="page">
+        <div class="body">
+          <span class="ptitle"
+            >How does Heaney present the power of nature in 'Storm on the
+            Island'?</span
+          >The opening line 'We are prepared' suggests confidence and control,
+          yet this assurance is quickly undermined as the poem progresses. The
+          islanders build their houses squat and sink walls in rock, but these
+          defences feel small against a force that 'dives and strafes
+          invisibly'.<br /><br />Furthermore, the simile of the 'tame cat turned
+          savage' captures how quickly the familiar becomes threatening. The
+          sea, which 'might' be company, offers no comfort at all. By the close,
+          the speaker admits they 'are bombarded by the empty air', and fear
+          itself becomes the subject: 'it is a huge nothing that we fear'.
+          Nature here is not only physical but psychological, wearing down even
+          the prepared mind.
+        </div>
+      </div>
+    </div>
+    <script>
+      (function () {
+        "use strict";
+        var LS = "figma.editor.v1";
+        function $(s, r) {
+          return (r || document).querySelector(s);
+        }
+        var titleEl = $(".titles .t"),
+          subEl = $(".titles .s"),
+          bodyEl = $(".page .body");
+        var bar = $(".formatbar"),
+          kids = bar.children;
+        var fontEl = kids[0],
+          sizeEl = kids[2],
+          bEl = kids[4],
+          iEl = kids[5],
+          uEl = kids[6],
+          wheelEl = kids[7];
+        var glyphBtns = [
+          kids[8],
+          kids[9],
+          kids[10],
+          kids[11],
+          kids[12],
+          kids[13],
+        ];
+        var FONTS = [
+          "Inter",
+          "SF Pro",
+          "Georgia",
+          "Times New Roman",
+          "Courier New",
+        ];
+        var COLORS = [
+          "#000000",
+          "#FF383C",
+          "#FF8D28",
+          "#FFCC00",
+          "#34C759",
+          "#0088FF",
+          "#6155F5",
+        ];
+        var S = {
+          title: null,
+          sub: null,
+          body: null,
+          font: "Inter",
+          size: 16,
+          ci: 0,
+        };
+        function save() {}
+        var t = null;
+        function saveSoon() {
+          clearTimeout(t);
+          t = setTimeout(save, 400);
+        }
+        function load() {
+          return false;
+        }
+        [titleEl, subEl, bodyEl].forEach(function (el) {
+          el.setAttribute("contenteditable", "true");
+          el.setAttribute("spellcheck", "false");
+        });
+        load();
+        function snapshot() {
+          S.title = titleEl.innerHTML;
+          S.sub = subEl.innerHTML;
+          S.body = bodyEl.innerHTML;
+        }
+        [titleEl, subEl, bodyEl].forEach(function (el) {
+          el.addEventListener("input", function () {
+            snapshot();
+            saveSoon();
+          });
+        });
+        function applyFontSize() {
+          bodyEl.style.fontFamily = S.font;
+          bodyEl.style.fontSize = S.size + "px";
+        }
+        applyFontSize();
+        fontEl.title = "Click: next font";
+        fontEl.nextElementSibling.title = "Reset font";
+        sizeEl.title = "Click: bigger (shift-click: smaller)";
+        sizeEl.nextElementSibling.title = "Smaller";
+        fontEl.addEventListener("click", function () {
+          var i = (FONTS.indexOf(S.font) + 1) % FONTS.length;
+          S.font = FONTS[i];
+          fontEl.textContent = S.font;
+          applyFontSize();
+          snapshot();
+          save();
+        });
+        kids[1].addEventListener("click", function () {
+          S.font = "Inter";
+          fontEl.textContent = S.font;
+          applyFontSize();
+          snapshot();
+          save();
+        });
+        function setSize(n) {
+          S.size = Math.min(32, Math.max(8, n));
+          sizeEl.textContent = S.size;
+          applyFontSize();
+          snapshot();
+          save();
+        }
+        sizeEl.addEventListener("click", function (e) {
+          setSize(S.size + (e.shiftKey ? -1 : 1));
+        });
+        kids[3].addEventListener("click", function () {
+          setSize(S.size - 1);
+        });
+
+        function editableOf(node) {
+          while (node && node !== document.body) {
+            if (node === titleEl || node === subEl || node === bodyEl)
+              return node;
+            node = node.parentNode;
+          }
+          return null;
+        }
+        function wrapSel(tag, style) {
+          var sel = getSelection();
+          if (!sel.rangeCount || sel.isCollapsed) return;
+          var r = sel.getRangeAt(0),
+            ed = editableOf(r.commonAncestorContainer);
+          if (!ed) return;
+          var a =
+            r.commonAncestorContainer.nodeType === 3
+              ? r.commonAncestorContainer.parentNode
+              : r.commonAncestorContainer;
+          var unw = null;
+          while (a && a !== ed) {
+            if (a.tagName === tag.toUpperCase()) {
+              unw = a;
+              break;
+            }
+            a = a.parentNode;
+          }
+          if (unw) {
+            var par = unw.parentNode;
+            while (unw.firstChild) par.insertBefore(unw.firstChild, unw);
+            par.removeChild(unw);
+          } else {
+            var el = document.createElement(tag);
+            if (style) el.setAttribute("style", style);
+            try {
+              r.surroundContents(el);
+            } catch (e) {
+              el.appendChild(r.extractContents());
+              r.insertNode(el);
+            }
+          }
+          snapshot();
+          save();
+        }
+        function keepSel(fn) {
+          return function (e) {
+            e.preventDefault();
+            fn();
+          };
+        }
+        bEl.title = "Bold";
+        iEl.title = "Italic";
+        uEl.title = "Underline";
+        bEl.addEventListener(
+          "mousedown",
+          keepSel(function () {
+            wrapSel("b");
+          }),
+        );
+        iEl.addEventListener(
+          "mousedown",
+          keepSel(function () {
+            wrapSel("i");
+          }),
+        );
+        uEl.addEventListener(
+          "mousedown",
+          keepSel(function () {
+            wrapSel("u");
+          }),
+        );
+        wheelEl.title = "Text color";
+        wheelEl.addEventListener(
+          "mousedown",
+          keepSel(function () {
+            S.ci = (S.ci + 1) % COLORS.length;
+            wrapSel("span", "color:" + COLORS[S.ci]);
+          }),
+        );
+        function cmd(c) {
+          return function (e) {
+            e.preventDefault();
+            bodyEl.focus();
+            try {
+              document.execCommand(c, false, null);
+            } catch (_) {}
+            snapshot();
+            save();
+          };
+        }
+        var cmds = [
+          "insertUnorderedList",
+          "justifyLeft",
+          "justifyCenter",
+          "justifyRight",
+          "justifyFull",
+          "indent",
+        ];
+        var names = [
+          "Bullets",
+          "Align left",
+          "Align center",
+          "Align right",
+          "Justify",
+          "Indent",
+        ];
+        glyphBtns.forEach(function (btn, i) {
+          btn.title = names[i];
+          btn.addEventListener("mousedown", cmd(cmds[i]));
+        });
+
+        function focusBody() {
+          bodyEl.focus();
+          var r = document.createRange();
+          r.selectNodeContents(bodyEl);
+          r.collapse(false);
+          var sel = getSelection();
+          sel.removeAllRanges();
+          sel.addRange(r);
+        }
+        var undoPill = $(".undopill"),
+          redoPill = $(".redopill"),
+          trashPill = $(".trashpill");
+        undoPill.style.cursor = "pointer";
+        redoPill.style.cursor = "pointer";
+        trashPill.style.cursor = "pointer";
+        undoPill.title = "Undo";
+        redoPill.title = "Redo";
+        trashPill.title = "Clear page";
+        undoPill.addEventListener("click", function () {
+          bodyEl.focus();
+          try {
+            document.execCommand("undo", false, null);
+          } catch (e) {}
+          snapshot();
+          save();
+        });
+        redoPill.addEventListener("click", function () {
+          bodyEl.focus();
+          try {
+            document.execCommand("redo", false, null);
+          } catch (e) {}
+          snapshot();
+          save();
+        });
+        trashPill.addEventListener("click", function () {
+          focusBody();
+          try {
+            document.execCommand("delete", false, null);
+          } catch (e) {}
+          snapshot();
+          save();
+        });
+        snapshot();
+      })();
+    </script>
+  </body>
+</html>

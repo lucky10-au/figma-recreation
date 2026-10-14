@@ -1,0 +1,1336 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Home</title>
+    <style>
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        background: #f9f9f9;
+        font-family:
+          "SF Pro",
+          -apple-system,
+          BlinkMacSystemFont,
+          sans-serif;
+        display: flex;
+        align-items: flex-start;
+        justify-content: center;
+        min-height: 100vh;
+        padding: 0;
+        -webkit-font-smoothing: antialiased;
+      }
+      .canvas {
+        width: 100%;
+        max-width: 1440px;
+        height: 100vh;
+        min-height: 900px;
+        background: #f9f9f9;
+        border-radius: 0;
+        position: relative;
+        overflow: hidden;
+        box-shadow: none;
+        color: rgba(0, 0, 0, 0.85);
+      }
+      .sf {
+        font-family:
+          "SF Pro",
+          -apple-system,
+          sans-serif;
+        font-weight: 510;
+        line-height: 1;
+        display: inline-block;
+      }
+      .side {
+        position: absolute;
+        left: 10px;
+        top: 10px;
+        width: 240px;
+        height: 880px;
+        background: rgba(245, 245, 245, 0.85);
+        backdrop-filter: blur(20px);
+        border-radius: 18px;
+        box-shadow: 0 8px 40px rgba(0, 0, 0, 0.12);
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+      }
+      .newpill {
+        margin: 10px 10px 0;
+        background: #fff;
+        border-radius: 100px;
+        height: 33px;
+        display: flex;
+        align-items: center;
+        padding: 4px;
+        box-shadow: 0 0 0 0.5px #ebebeb;
+      }
+      .newpill .ic {
+        width: 28px;
+        height: 25px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 15px;
+        font-weight: 510;
+      }
+      .newpill span.t {
+        flex: 1;
+        text-align: right;
+        padding-right: 12px;
+        font-size: 15px;
+      }
+      .nav {
+        padding: 10px 10px 0;
+        display: flex;
+        flex-direction: column;
+      }
+      .nrow {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        height: 40px;
+        padding: 0 10px 0 8px;
+        border-radius: 8px;
+        font-size: 15px;
+      }
+      .nrow .sf {
+        width: 24px;
+        text-align: center;
+        font-size: 15px;
+      }
+      .nrow.sel {
+        background: rgba(0, 0, 0, 0.11);
+        background-blend-mode: multiply;
+      }
+      .nrow.sel .sf {
+        color: #007aff;
+      }
+      .side-foot {
+        margin-top: auto;
+        padding: 10px;
+        border-top: 0.5px solid rgba(0, 0, 0, 0.06);
+      }
+      .side-foot .sf:last-child {
+        font-size: 15px;
+        color: rgba(0, 0, 0, 0.6);
+      }
+      .topbar {
+        position: absolute;
+        left: 265px;
+        right: 17px;
+        top: 23px;
+        display: flex;
+        justify-content: flex-end;
+      }
+      .search {
+        width: 146px;
+        height: 36px;
+        background: #fff;
+        box-shadow: 0 0 0 0.4px #ebebeb;
+        border-radius: 999px;
+        display: flex;
+        align-items: center;
+        padding: 0 10px 0 12px;
+        gap: 6px;
+        font-size: 13px;
+        color: rgba(60, 60, 67, 0.6);
+      }
+      .search .ph {
+        color: #bfbfbf;
+        flex: 1;
+      }
+      h1.home {
+        position: absolute;
+        left: 273px;
+        top: 18px;
+        font-size: 34px;
+        font-weight: 700;
+        letter-spacing: 0.4px;
+        color: #000;
+      }
+      .sec {
+        position: absolute;
+        border-radius: 20px;
+        overflow: hidden;
+      }
+      .sec .accent {
+        position: absolute;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        width: 24px;
+      }
+      .sec .inner {
+        position: absolute;
+        left: 24px;
+        top: 0;
+        bottom: 0;
+        right: 0;
+        background: #fff;
+      }
+      .red-sec {
+        left: 273px;
+        top: 80px;
+        width: 561px;
+        height: 327px;
+        background: #ff383c;
+      }
+      .green-sec {
+        left: 855px;
+        top: 80px;
+        width: 560px;
+        height: 327px;
+        background: #34c759;
+      }
+      .indigo-sec {
+        left: 273px;
+        top: 428px;
+        width: 1142px;
+        height: 327px;
+        background: #6155f5;
+      }
+      .yellow-sec {
+        left: 273px;
+        top: 776px;
+        width: 1142px;
+        height: 327px;
+        background: #ffcc00;
+      }
+      .docs {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 12px;
+        padding: 13px 14px 12px;
+        height: 100%;
+        align-content: stretch;
+      }
+      .doc {
+        width: auto;
+        min-width: 0;
+      }
+      .thumb {
+        height: clamp(80px, calc(var(--row, 327px) * 0.4), 180px);
+        background: #f4f4f6;
+        border-radius: 10px;
+        box-shadow: 0 4px 24px rgba(0, 0, 0, 0.05);
+        padding: 6px;
+        font-size: 5px;
+        line-height: 6px;
+        color: #b0b0b5;
+        overflow: hidden;
+      }
+      .thumb b {
+        display: block;
+        font-size: 5px;
+        color: #8e8e93;
+        font-weight: 600;
+      }
+      .cap {
+        font-size: 7px;
+        line-height: 8px;
+        margin-top: 4px;
+        color: #6b6b6e;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+      }
+      .books {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 0 14px;
+        padding: 13px 18px 12px 22px;
+        overflow: hidden;
+        height: 100%;
+      }
+      .book {
+        width: auto;
+        min-width: 0;
+      }
+      .cover {
+        height: clamp(150px, calc(var(--row, 327px) - 57px), 340px);
+        border-radius: 10px;
+        background: #ff9500;
+        color: #fff;
+        padding: 10px;
+        font-size: 15px;
+        font-weight: 800;
+        line-height: 17px;
+        box-shadow: 0 4px 23px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+        position: relative;
+      }
+      .cover small {
+        display: block;
+        font-size: 9px;
+        font-weight: 400;
+        margin-top: 2px;
+      }
+      .cover .badge {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        background: #000;
+        color: #ffcc00;
+        font-size: 14px;
+        font-weight: 800;
+        width: 22px;
+        height: 28px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 3px;
+      }
+      .cover .photo {
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        height: 62%;
+        background: #fff;
+        display: block;
+        padding: 8px 10px;
+        font-size: 8px;
+        line-height: 1.75;
+        color: #1a1a1a;
+        font-weight: 400;
+      }
+      .cover .photo b {
+        display: block;
+        font-size: 8.5px;
+        font-weight: 800;
+        margin-bottom: 2px;
+      }
+      .cover .photo span {
+        display: block;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .cover .photo em {
+        display: block;
+        font-style: normal;
+        color: #007aff;
+        margin-top: 3px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .bcap {
+        font-size: 10px;
+        margin-top: 6px;
+        color: rgba(0, 0, 0, 0.85);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .goto {
+        position: absolute;
+        right: 14px;
+        bottom: 12px;
+        font-size: 11px;
+        color: #8e8e93;
+      }
+      .tba-grid {
+        position: absolute;
+        left: 297px;
+        top: 428px;
+        width: 1118px;
+        height: 327px;
+        display: flex;
+        gap: 12px;
+        padding: 12px;
+      }
+      .tba {
+        flex: 1;
+        background: #fff;
+        border-radius: 20px;
+        box-shadow: 0 4px 24px rgba(0, 0, 0, 0.05);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 34px;
+        font-weight: 700;
+        color: #000;
+      }
+      .goto-apps {
+        position: absolute;
+        left: 273px;
+        top: 428px;
+        width: 1142px;
+        height: 327px;
+        pointer-events: none;
+      }
+      .goto-apps span {
+        position: absolute;
+        right: 14px;
+        bottom: 12px;
+        font-size: 11px;
+        color: #8e8e93;
+      }
+      .fade {
+        position: absolute;
+        left: 260px;
+        right: 0;
+        bottom: 0;
+        height: 23px;
+        background: linear-gradient(
+          180deg,
+          rgba(249, 249, 249, 0) 0%,
+          #f9f9f9 100%
+        );
+      }
+      .nrow,
+      .doc,
+      .book,
+      a.tba {
+        color: inherit;
+        text-decoration: none;
+      }
+    </style>
+    <style>
+      /* responsive-rescale home */
+      html,
+      body {
+        height: 100%;
+      }
+      body {
+        display: block !important;
+        min-height: 0 !important;
+        height: 100vh !important;
+        overflow: hidden !important;
+      }
+      .canvas {
+        width: 100% !important;
+        max-width: none !important;
+        height: 100vh !important;
+        min-height: 0 !important;
+        overflow-y: auto !important;
+        overflow-x: hidden !important;
+        padding-bottom: 32px;
+      }
+      .side {
+        position: fixed !important;
+        left: 10px !important;
+        top: 10px !important;
+        bottom: 10px !important;
+        height: auto !important;
+        width: 240px !important;
+        z-index: 20;
+      }
+      .red-sec {
+        width: calc((100% - 273px - 25px - 21px) / 2) !important;
+      }
+      .green-sec {
+        left: auto !important;
+        right: 25px;
+        width: calc((100% - 273px - 25px - 21px) / 2) !important;
+      }
+      .indigo-sec,
+      .yellow-sec {
+        width: auto !important;
+        right: 25px;
+      }
+      .tba-grid {
+        width: auto !important;
+        right: 25px;
+        overflow-x: auto !important;
+        scrollbar-width: none;
+      }
+      .canvas {
+        --row: clamp(240px, calc((100vh - 147px) / 3), 460px);
+      }
+      .red-sec,
+      .green-sec,
+      .indigo-sec,
+      .yellow-sec {
+        height: var(--row);
+      }
+      .indigo-sec,
+      .tba-grid,
+      .goto-apps {
+        top: calc(101px + var(--row));
+        height: var(--row);
+      }
+      .yellow-sec {
+        top: calc(122px + var(--row) * 2);
+      }
+      .tba-grid::-webkit-scrollbar {
+        display: none;
+      }
+      .tba.app-prev {
+        flex: 0 0 calc((100% - 24px) / 3) !important;
+        min-width: 220px;
+        flex-direction: column;
+        align-items: stretch !important;
+        justify-content: flex-start !important;
+        padding: 18px;
+        text-align: left;
+        gap: 12px;
+        position: relative;
+        font-size: 13px;
+      }
+      .app-name {
+        font-size: 20px;
+        font-weight: 700;
+        color: #000;
+      }
+      .pv {
+        flex: 1;
+        background: #f4f4f6;
+        border-radius: 12px;
+        padding: 12px;
+        overflow: hidden;
+        position: relative;
+        min-height: 0;
+      }
+      .pv-bar {
+        height: 22px;
+        background: #fff;
+        border-radius: 999px;
+        box-shadow: 0 0 0 0.5px #ebebeb;
+        margin-bottom: 10px;
+      }
+      .pv-lines i {
+        display: block;
+        height: 7px;
+        background: #e2e2e6;
+        border-radius: 4px;
+        margin: 7px 0;
+      }
+      .pv-lines i.short {
+        width: 55%;
+      }
+      .pv-board {
+        background-image: radial-gradient(
+          rgba(0, 0, 0, 0.14) 1px,
+          transparent 1px
+        );
+        background-size: 14px 14px;
+      }
+      .pv-tools {
+        position: absolute;
+        left: 10px;
+        right: 10px;
+        top: 10px;
+        display: flex;
+        gap: 6px;
+      }
+      .pv-tools b {
+        flex: 1;
+        height: 22px;
+        background: #fff;
+        border-radius: 999px;
+        box-shadow: 0 0 0 0.5px #ebebeb;
+      }
+      .pv-stroke {
+        position: absolute;
+        left: 12px;
+        right: 12px;
+        top: 48px;
+        bottom: 12px;
+      }
+      .pv-bub {
+        background: #fff;
+        border-radius: 10px;
+        padding: 8px 10px;
+        font-size: 11px;
+        line-height: 14px;
+        color: #000;
+        margin-bottom: 8px;
+        box-shadow: 0 0 0 0.5px #ebebeb;
+      }
+      .pv-bub.out {
+        background: rgba(97, 85, 245, 0.12);
+        box-shadow: none;
+      }
+      .pv-recon {
+        display: flex;
+        gap: 8px;
+      }
+      .pv-rcol {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        min-width: 0;
+      }
+      .pv-rbox {
+        background: #fff;
+        border-radius: 8px;
+        padding: 8px;
+        box-shadow: 0 0 0 0.5px #ebebeb;
+        overflow: hidden;
+      }
+      .pv-rbox i {
+        display: block;
+        height: 6px;
+        background: #e2e2e6;
+        border-radius: 3px;
+        margin: 5px 0;
+      }
+      .pv-rbox i.short {
+        width: 55%;
+      }
+      .pv-rcol .pv-rbox:first-child {
+        flex: 1.3;
+      }
+      .pv-rcol .pv-rbox:last-child {
+        flex: 1;
+      }
+      .pv-rbox.tall {
+        flex: 1;
+        min-width: 0;
+      }
+      .pv-week {
+        display: flex;
+        gap: 6px;
+      }
+      .pv-day {
+        flex: 1;
+        background: #fff;
+        border-radius: 8px;
+        padding: 6px 4px;
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        box-shadow: 0 0 0 0.5px #ebebeb;
+        min-width: 0;
+      }
+      .pv-day b {
+        font-size: 9px;
+        font-weight: 600;
+        color: #8e8e93;
+        text-align: center;
+      }
+      .pv-day i {
+        display: block;
+        height: 12px;
+        border-radius: 4px;
+      }
+      .pv-day i.none {
+        background: #f0f0f3;
+      }
+      .week-strip {
+        height: 100%;
+        padding: 14px 18px 12px;
+        display: flex;
+        flex-direction: column;
+      }
+      .ws-head {
+        display: flex;
+        align-items: baseline;
+        gap: 10px;
+        margin-bottom: 10px;
+      }
+      .ws-head b {
+        font-size: 20px;
+        font-weight: 700;
+        color: #000;
+      }
+      .ws-head span {
+        font-size: 12px;
+        color: #8e8e93;
+      }
+      .ws-head a {
+        margin-left: auto;
+        font-size: 12px;
+        color: #8e8e93;
+        text-decoration: none;
+      }
+      .ws-days {
+        flex: 1;
+        display: grid;
+        grid-template-columns: repeat(7, minmax(150px, 1fr));
+        gap: 10px;
+        min-height: 0;
+        overflow-x: auto;
+        scrollbar-width: none;
+      }
+      .ws-day {
+        background: #f4f4f6;
+        border-radius: 10px;
+        padding: 8px;
+        overflow: hidden;
+        min-width: 0;
+      }
+      .ws-day > b {
+        font-size: 11px;
+        font-weight: 700;
+        color: #000;
+      }
+      .ws-ev {
+        display: flex;
+        gap: 6px;
+        align-items: stretch;
+        background: #fff;
+        border-radius: 7px;
+        padding: 5px 7px;
+        margin-top: 6px;
+        font-size: 10px;
+        line-height: 12px;
+        color: #000;
+        box-shadow: 0 0 0 0.5px #ebebeb;
+      }
+      .ws-ev i {
+        width: 4px;
+        border-radius: 2px;
+        flex-shrink: 0;
+      }
+      .ws-ev small {
+        display: block;
+        color: #8e8e93;
+        font-size: 9px;
+      }
+      .goto-apps {
+        width: auto !important;
+        right: 25px;
+      }
+      .fade {
+        position: sticky !important;
+        bottom: 0;
+        left: 0;
+        right: 0;
+      }
+      .docs {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+      }
+      .books {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+      @media (max-width: 1100px) {
+        .cover {
+          height: 220px;
+        }
+      }
+      @media (max-width: 860px) {
+        .side {
+          left: 0 !important;
+          right: 0 !important;
+          top: 0 !important;
+          bottom: auto !important;
+          width: auto !important;
+          min-height: 0;
+          flex-direction: row;
+          align-items: center;
+          padding: 6px 10px;
+          gap: 8px;
+          border-radius: 0 0 18px 18px;
+        }
+        .newpill {
+          display: none;
+        }
+        .side .nav {
+          flex-direction: row;
+          flex: 1;
+          overflow-x: auto;
+          padding: 0;
+        }
+        .side .nav .nrow {
+          white-space: nowrap;
+          height: 36px;
+          flex-shrink: 0;
+        }
+        .side-foot {
+          margin: 0;
+          padding: 0;
+          border: 0;
+        }
+        h1.home {
+          left: 16px;
+          top: 84px;
+          font-size: 28px;
+        }
+        .topbar {
+          left: auto;
+          right: 16px;
+          top: 88px;
+        }
+        .red-sec {
+          left: 16px !important;
+          right: 16px !important;
+          top: 140px;
+          width: auto !important;
+          max-width: none;
+          height: auto;
+          min-height: 300px;
+        }
+        .green-sec {
+          left: 16px !important;
+          right: 16px !important;
+          top: 470px;
+          width: auto !important;
+          max-width: none;
+          height: auto;
+          min-height: 300px;
+        }
+        .indigo-sec {
+          left: 16px;
+          right: 16px;
+          top: 800px;
+          height: 200px;
+        }
+        .tba-grid {
+          left: 16px;
+          right: 16px;
+          top: 800px;
+          width: auto;
+          height: 200px;
+          padding: 8px;
+        }
+        .goto-apps {
+          left: 16px;
+          right: 16px;
+          top: 800px;
+          width: auto;
+        }
+        .yellow-sec {
+          left: 16px;
+          right: 16px;
+          top: 1020px;
+          height: 200px;
+        }
+        .docs {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+        .books {
+          grid-template-columns: minmax(0, 1fr);
+          gap: 12px;
+        }
+        .cover {
+          height: 180px;
+        }
+        .cover .photo {
+          height: 90px;
+        }
+      }
+    </style>
+    <style>
+      #newov {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.28);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 90;
+      }
+      #newov[hidden] {
+        display: none;
+      }
+      .newmodal {
+        width: 340px;
+        max-width: calc(100vw - 40px);
+        background: #fff;
+        border-radius: 16px;
+        box-shadow: 0 18px 60px rgba(0, 0, 0, 0.25);
+        padding: 18px;
+      }
+      .nm-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 12px;
+      }
+      .nm-head b {
+        font-size: 18px;
+        color: #000;
+      }
+      #nx {
+        border: 0;
+        background: #f1f1f4;
+        width: 28px;
+        height: 28px;
+        border-radius: 999px;
+        font-size: 15px;
+        cursor: pointer;
+        color: #555;
+      }
+      .nm-types {
+        display: flex;
+        gap: 8px;
+        margin-bottom: 12px;
+      }
+      .nm-type {
+        flex: 1;
+        border: 0;
+        border-radius: 10px;
+        padding: 9px;
+        font-size: 14px;
+        font-weight: 600;
+        background: #f1f1f4;
+        color: #333;
+        cursor: pointer;
+      }
+      .nm-type.sel {
+        background: #007aff;
+        color: #fff;
+      }
+      .nm-lab {
+        display: block;
+        font-size: 12px;
+        font-weight: 600;
+        color: #555;
+        margin-bottom: 10px;
+      }
+      .nm-lab input {
+        display: block;
+        width: 100%;
+        margin-top: 4px;
+        border: 1px solid #e3e3e8;
+        border-radius: 10px;
+        padding: 9px 10px;
+        font-size: 14px;
+        font-family: inherit;
+        color: #000;
+      }
+      .nm-lab input:focus {
+        outline: none;
+        border-color: #007aff;
+      }
+      .nm-actions {
+        display: flex;
+        gap: 8px;
+        margin-top: 4px;
+      }
+      .nm-actions button {
+        flex: 1;
+        border: 0;
+        border-radius: 10px;
+        padding: 10px;
+        font-size: 14px;
+        font-weight: 700;
+        cursor: pointer;
+      }
+      #ncancel {
+        background: #f1f1f4;
+        color: #222;
+      }
+      #ncreate {
+        background: #007aff;
+        color: #fff;
+      }
+      .newpill {
+        cursor: pointer;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="canvas">
+      <div class="side">
+        <div class="newpill">
+          <span class="ic sf">􀅼</span><span class="t">New</span>
+        </div>
+        <div class="nav">
+          <a class="nrow sel" href="home.html"><span class="sf">􀎞</span>Home</a>
+          <a class="nrow" href="calendar.html"
+            ><span class="sf">􀉉</span>Calendar</a
+          >
+          <div class="nrow"><span class="sf">􀣔</span>Recent</div>
+          <a class="nrow" href="files.html"><span class="sf">􀈕</span>Files</a>
+          <div class="nrow"><span class="sf">􀿫</span>Apps</div>
+          <a class="nrow" href="resources.html"
+            ><span class="sf">􀈷</span>Resources</a
+          >
+          <div class="nrow"><span class="sf">􀈑</span>Trash</div>
+        </div>
+        <div class="side-foot">
+          <a class="nrow" href="settings-appearance.html"
+            ><span class="sf">􀍟</span>Settings<span
+              class="sf"
+              style="margin-left: auto"
+              >􀉭</span
+            ></a
+          >
+        </div>
+      </div>
+      <h1 class="home">Home</h1>
+      <div class="topbar">
+        <div class="search">
+          <span class="sf">􀊫</span><span class="ph">Search</span
+          ><span class="sf">􀊰</span>
+        </div>
+      </div>
+      <div class="sec red-sec">
+        <div class="accent" style="background: #ff383c"></div>
+        <div class="inner">
+          <div class="docs">
+            <div class="doc">
+              <div class="thumb">
+                <b>Differentiation<br />p.112</b>f(x) = (3x^2 + 1)^4<br />u =
+                3x^2 + 1, y = u^4<br />dy/dx = 24x(3x^2 + 1)^3
+              </div>
+              <div class="cap">
+                Maths Methods Ch.4 - chain rule worked examples...
+              </div>
+            </div>
+            <div class="doc">
+              <div class="thumb">
+                <b>Integration<br />p.148</b>Integral 0 to 3 of x^2<br />[x^3/3]
+                = 27/3 - 0<br />Area = 9 units squared
+              </div>
+              <div class="cap">
+                Maths Methods Ch.5 - definite integrals practice...
+              </div>
+            </div>
+            <div class="doc">
+              <div class="thumb">
+                <b>Probability<br />p.201</b>P(A and B) = 0.28<br />Multiply
+                along branches<br />Branches must sum to 1
+              </div>
+              <div class="cap">
+                Maths Methods Ch.7 - tree diagrams worksheet...
+              </div>
+            </div>
+            <div class="doc">
+              <div class="thumb">
+                <b>Trigonometry<br />p.96</b>sin B = 9 sin40 / 7<br />B = 55.7
+                degrees<br />Watch the ambiguous case
+              </div>
+              <div class="cap">
+                Maths Methods Ch.3 - sine and cosine rule notes...
+              </div>
+            </div>
+            <div class="doc">
+              <div class="thumb">
+                <b>Vectors<br />p.230</b>a . b = 8 - 3 = 5<br />|a| = 3.61, |b|
+                = 4.12<br />Angle = 70.3 degrees
+              </div>
+              <div class="cap">
+                Spec Maths Ch.2 - vector worked solutions...
+              </div>
+            </div>
+            <div class="doc">
+              <div class="thumb">
+                <b>Statistics<br />p.264</b>z = (60 - 50) / 8<br />z = 1.25,
+                table = 0.8944<br />P = 1 - 0.8944 = 0.1056
+              </div>
+              <div class="cap">
+                Maths Methods Ch.9 - normal distribution tables...
+              </div>
+            </div>
+            <div class="doc">
+              <div class="thumb">
+                <b>Logarithms<br />p.61</b>2 log 3 + log 4<br />= log 9 + log
+                4<br />= log 36
+              </div>
+              <div class="cap">
+                Maths Methods Ch.2 - logarithm laws cheat sheet...
+              </div>
+            </div>
+            <div class="doc">
+              <div class="thumb">
+                <b>Exam Revision<br />2025 paper</b>Section A: 1 mark a
+                minute<br />Show working for methods<br />Round the final answer
+                only
+              </div>
+              <div class="cap">
+                Practice exam - 2025 methods trial with solutions...
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="sec green-sec">
+        <div class="accent" style="background: #34c759"></div>
+        <div class="inner">
+          <div class="books">
+            <div class="book">
+              <div class="cover">
+                Mathematics for Australia<small
+                  >Mathematical Methods • Haese</small
+                ><span class="badge">1</span>
+                <div class="photo">
+                  <b>Inside this book</b><span>2 Functions and relations</span
+                  ><span>4 Chain rule worked examples</span
+                  ><span>5 Definite integrals practice</span
+                  ><em>dy/dx = 24x(3x^2 + 1)^3</em>
+                </div>
+              </div>
+              <div class="bcap">
+                Year 12 methods textbook - functions and calculus...
+              </div>
+            </div>
+            <div class="book">
+              <div class="cover">
+                Mathematics for Australia<small
+                  >Specialist Mathematics • Haese</small
+                ><span class="badge">2</span>
+                <div class="photo">
+                  <b>Inside this book</b><span>2 Vectors and dot products</span
+                  ><span>6 Complex numbers</span
+                  ><span>8 Proof by induction</span
+                  ><em>a . b = |a||b| cos - angle 70.3 deg</em>
+                </div>
+              </div>
+              <div class="bcap">
+                Year 12 specialist textbook - vectors and proofs...
+              </div>
+            </div>
+            <div class="book">
+              <div class="cover">
+                Physics for Australia<small>Units 3 and 4 • Oxford</small
+                ><span class="badge">3</span>
+                <div class="photo">
+                  <b>Inside this book</b><span>1 Motion and projectile</span
+                  ><span>3 Electronics and circuits</span
+                  ><span>5 Light and matter</span
+                  ><em>v = u + at - F = ma worked Q1-10</em>
+                </div>
+              </div>
+              <div class="bcap">
+                Year 12 physics textbook - motion and electronics...
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="sec indigo-sec">
+        <div class="accent" style="background: #6155f5"></div>
+        <div class="inner"></div>
+      </div>
+      <div class="tba-grid">
+        <a class="tba app-prev" href="editor.html"
+          ><span class="app-name">Editor</span
+          ><span class="pv"
+            ><span class="pv-bar"></span
+            ><span class="pv-lines"
+              ><i></i><i></i><i></i><i class="short"></i></span></span></a
+        ><a class="tba app-prev" href="index.html"
+          ><span class="app-name">Whiteboard</span
+          ><span class="pv pv-board"
+            ><span class="pv-tools"><b></b><b></b><b></b></span
+            ><svg
+              class="pv-stroke"
+              viewBox="0 0 200 80"
+              preserveAspectRatio="none"
+            >
+              <path
+                d="M5 60 C 40 10, 70 90, 110 40 S 170 20, 195 50"
+                fill="none"
+                stroke="#FF9500"
+                stroke-width="5"
+                stroke-linecap="round"
+              /></svg></span></a
+        ><a class="tba app-prev" href="recontextualiser.html"
+          ><span class="app-name">Recontextualiser</span
+          ><span class="pv pv-recon"
+            ><span class="pv-rcol"
+              ><span class="pv-rbox"><i></i><i></i><i class="short"></i></span
+              ><span class="pv-rbox"><i></i><i class="short"></i></span></span
+            ><span class="pv-rbox tall"
+              ><i></i><i></i><i></i><i class="short"></i></span></span
+        ></a>
+      </div>
+      <div class="sec yellow-sec">
+        <div class="accent" style="background: #ffcc00"></div>
+        <div class="inner">
+          <div class="week-strip">
+            <div class="ws-head">
+              <b>This week</b><span>August 13 - 19</span>
+            </div>
+            <div class="ws-days">
+              <div class="ws-day">
+                <b>Mon 13</b>
+                <div class="ws-ev">
+                  <i style="background: #ff383c"></i>
+                  <div>Class A<small>8-10 am</small></div>
+                </div>
+                <div class="ws-ev">
+                  <i style="background: #34c759"></i>
+                  <div>Meeting</div>
+                </div>
+                <div class="ws-ev">
+                  <i style="background: #34c759"></i>
+                  <div>Meeting</div>
+                </div>
+              </div>
+              <div class="ws-day">
+                <b>Tue 14</b>
+                <div class="ws-ev">
+                  <i style="background: #ff8d28"></i>
+                  <div>Class E<small>10-12 pm</small></div>
+                </div>
+                <div class="ws-ev">
+                  <i style="background: #34c759"></i>
+                  <div>Meeting</div>
+                </div>
+                <div class="ws-ev">
+                  <i style="background: #ffcc00"></i>
+                  <div>Class C<small>1-3 pm</small></div>
+                </div>
+              </div>
+              <div class="ws-day">
+                <b>Wed 15</b>
+                <div class="ws-ev">
+                  <i style="background: #ff383c"></i>
+                  <div>Class A<small>10-12 pm</small></div>
+                </div>
+              </div>
+              <div class="ws-day">
+                <b>Thu 16</b>
+                <div class="ws-ev">
+                  <i style="background: #ff8d28"></i>
+                  <div>Class E<small>8-10 am</small></div>
+                </div>
+                <div class="ws-ev">
+                  <i style="background: #34c759"></i>
+                  <div>Faculty meeting<small>12-1 pm</small></div>
+                </div>
+                <div class="ws-ev">
+                  <i style="background: #ffcc00"></i>
+                  <div>Class C<small>1-3 pm</small></div>
+                </div>
+              </div>
+              <div class="ws-day">
+                <b>Fri 17</b>
+                <div class="ws-ev">
+                  <i style="background: #ff383c"></i>
+                  <div>Class A<small>8-10 am</small></div>
+                </div>
+                <div class="ws-ev">
+                  <i style="background: #34c759"></i>
+                  <div>Department meeting<small>12-1 pm</small></div>
+                </div>
+              </div>
+              <div class="ws-day">
+                <b>Sat 18</b>
+                <div class="ws-ev">
+                  <i style="background: #6155f5"></i>
+                  <div>Test marking<small>11-4 pm</small></div>
+                </div>
+              </div>
+              <div class="ws-day">
+                <b>Sun 19</b>
+                <div class="ws-ev">
+                  <i style="background: #00c8b3"></i>
+                  <div>Holiday club<small>8-10 am</small></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="fade"></div>
+    </div>
+    <div id="newov" hidden>
+      <div class="newmodal" role="dialog" aria-label="New">
+        <div class="nm-head">
+          <b>New</b><button id="nx" aria-label="Close">×</button>
+        </div>
+        <div class="nm-types">
+          <button class="nm-type sel" data-t="file">File</button
+          ><button class="nm-type" data-t="res">Resource</button>
+        </div>
+        <label class="nm-lab"
+          >Name<input id="nn" placeholder="e.g. Complex numbers" maxlength="60"
+        /></label>
+        <label class="nm-lab"
+          >Details<input
+            id="nd"
+            placeholder="e.g. Specialist Maths Ch.6"
+            maxlength="80"
+        /></label>
+        <div class="nm-actions">
+          <button id="ncancel">Cancel</button
+          ><button id="ncreate">Create</button>
+        </div>
+      </div>
+    </div>
+    <script>
+      (function () {
+        var ov = document.getElementById("newov"),
+          pill = document.querySelector(".newpill"),
+          type = "file";
+        document.querySelectorAll(".nm-type").forEach(function (b) {
+          b.addEventListener("click", function () {
+            type = b.getAttribute("data-t");
+            document.querySelectorAll(".nm-type").forEach(function (x) {
+              x.classList.toggle("sel", x === b);
+            });
+          });
+        });
+        function open() {
+          ov.hidden = false;
+          var n = document.getElementById("nn");
+          n.value = "";
+          document.getElementById("nd").value = "";
+          setTimeout(function () {
+            n.focus();
+          }, 0);
+        }
+        function close() {
+          ov.hidden = true;
+        }
+        pill.addEventListener("click", open);
+        document.getElementById("nx").addEventListener("click", close);
+        document.getElementById("ncancel").addEventListener("click", close);
+        ov.addEventListener("click", function (e) {
+          if (e.target === ov) close();
+        });
+        document.addEventListener("keydown", function (e) {
+          if (e.key === "Escape" && !ov.hidden) close();
+        });
+        document
+          .getElementById("ncreate")
+          .addEventListener("click", function () {
+            var name = document.getElementById("nn").value.trim() || "Untitled";
+            var det = document.getElementById("nd").value.trim();
+            if (type === "file") {
+              var g = document.querySelector(".docs"),
+                d = document.createElement("div");
+              d.className = "doc";
+              var th = document.createElement("div");
+              th.className = "thumb";
+              var b = document.createElement("b");
+              b.textContent = name;
+              th.appendChild(b);
+              if (det) {
+                th.appendChild(document.createElement("br"));
+                var s = document.createElement("span");
+                s.textContent = det;
+                th.appendChild(s);
+              }
+              var c = document.createElement("div");
+              c.className = "cap";
+              c.textContent = det || name;
+              d.appendChild(th);
+              d.appendChild(c);
+              g.appendChild(d);
+            } else {
+              var bk = document.querySelector(".books"),
+                k = document.createElement("div");
+              k.className = "book";
+              var cv = document.createElement("div");
+              cv.className = "cover";
+              cv.appendChild(document.createTextNode(name));
+              var sm = document.createElement("small");
+              sm.textContent = det || "New resource";
+              cv.appendChild(sm);
+              var ph = document.createElement("div");
+              ph.className = "photo";
+              var pb = document.createElement("b");
+              pb.textContent = "Inside this book";
+              ph.appendChild(pb);
+              var ps = document.createElement("span");
+              ps.textContent = det || name;
+              ph.appendChild(ps);
+              cv.appendChild(ph);
+              k.appendChild(cv);
+              var bc = document.createElement("div");
+              bc.className = "bcap";
+              bc.textContent = det || name;
+              k.appendChild(bc);
+              bk.appendChild(k);
+            }
+            close();
+          });
+      })();
+    </script>
+  </body>
+</html>

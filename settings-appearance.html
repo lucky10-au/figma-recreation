@@ -1,0 +1,995 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Appearance</title>
+    <style>
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        background: #f9f9f9;
+        font-family:
+          "SF Pro",
+          -apple-system,
+          BlinkMacSystemFont,
+          sans-serif;
+        display: flex;
+        align-items: flex-start;
+        justify-content: center;
+        min-height: 100vh;
+        padding: 0;
+        -webkit-font-smoothing: antialiased;
+      }
+      .canvas {
+        --acc: #007aff;
+        width: 100%;
+        max-width: 1440px;
+        height: 100vh;
+        min-height: 900px;
+        background: #f9f9f9;
+        border-radius: 0;
+        position: relative;
+        overflow: hidden;
+        box-shadow: none;
+        color: rgba(0, 0, 0, 0.85);
+      }
+      .sf {
+        font-family:
+          "SF Pro",
+          -apple-system,
+          sans-serif;
+        font-weight: 510;
+        display: inline-block;
+        line-height: 1;
+      }
+      a.menupill {
+        color: inherit;
+        text-decoration: none;
+      }
+      .menupill {
+        position: absolute;
+        left: 10px;
+        top: 23px;
+        height: 36px;
+        min-width: 69px;
+        background: #fff;
+        box-shadow: 0 0 0 0.4px #ebebeb;
+        border-radius: 81px;
+        display: flex;
+        align-items: center;
+        padding: 0 12px 0 8px;
+        gap: 4px;
+        font-size: 13.77px;
+        color: #1a1a1a;
+      }
+      .search {
+        position: absolute;
+        right: 17px;
+        top: 23px;
+        width: 146px;
+        height: 36px;
+        background: #fff;
+        box-shadow: 0 0 0 0.4px #ebebeb;
+        border-radius: 999px;
+        display: flex;
+        align-items: center;
+        padding: 0 10px 0 12px;
+        gap: 6px;
+        font-size: 13px;
+        color: rgba(60, 60, 67, 0.6);
+      }
+      .search .ph {
+        color: #bfbfbf;
+        flex: 1;
+      }
+      .side {
+        position: absolute;
+        left: 10px;
+        top: 75px;
+        width: 240px;
+        height: 815px;
+        background: rgba(245, 245, 245, 0.85);
+        backdrop-filter: blur(20px);
+        border-radius: 18px;
+        box-shadow: 0 8px 40px rgba(0, 0, 0, 0.12);
+        padding: 10px;
+        display: flex;
+        flex-direction: column;
+      }
+      .nrow {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        height: 40px;
+        padding: 0 10px 0 8px;
+        border-radius: 8px;
+        font-size: 15px;
+      }
+      .nrow .sf {
+        width: 24px;
+        text-align: center;
+        font-size: 15px;
+      }
+      .nrow.sel {
+        background: rgba(0, 0, 0, 0.11);
+        background-blend-mode: multiply;
+      }
+      .nrow.sel .sf {
+        color: var(--acc);
+      }
+      h1 {
+        position: absolute;
+        left: 264px;
+        top: 41px;
+        font-size: 34px;
+        font-weight: 700;
+        letter-spacing: 0.4px;
+        color: #000;
+      }
+      h2 {
+        position: absolute;
+        left: 273px;
+        top: 97px;
+        font-size: 22px;
+        font-weight: 700;
+      }
+      .rowlabel {
+        position: absolute;
+        left: 273px;
+        font-size: 22px;
+        font-weight: 400;
+        color: #000;
+      }
+      .wheel {
+        position: absolute;
+        left: 1378px;
+        top: 141px;
+        cursor: pointer;
+        width: 37px;
+        height: 37px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .wheel div {
+        width: 28px;
+        height: 28px;
+        border-radius: 9999px;
+        background: conic-gradient(
+          from 0deg,
+          #e7e040 0deg,
+          #eeaa3c 45deg,
+          #e8403b 90deg,
+          #b33ed5 132deg,
+          #694ae8 182deg,
+          #3ccae7 231deg,
+          #3ce885 270deg,
+          #89e743 313deg,
+          #e7e040 360deg
+        );
+      }
+      .toggle {
+        position: absolute;
+        left: 1349px;
+        top: 192px;
+        width: 64px;
+        height: 28px;
+        background: #e5e5ea;
+        border-radius: 100px;
+        cursor: pointer;
+      }
+      .toggle div {
+        position: absolute;
+        left: 2px;
+        top: 2px;
+        width: 38px;
+        height: 24px;
+        background: #fff;
+        border-radius: 100px;
+      }
+      .toggle.on {
+        background: var(--acc);
+      }
+      .toggle.on div {
+        left: auto;
+        right: 2px;
+      }
+      .slider {
+        position: absolute;
+        left: 1313px;
+        top: 237px;
+        width: 100px;
+        height: 24px;
+      }
+      .slider .track {
+        position: absolute;
+        left: 0;
+        top: 9px;
+        width: 100px;
+        height: 6px;
+        background: rgba(0, 0, 0, 0.1);
+        border-radius: 100px;
+      }
+      .slider .fill {
+        position: absolute;
+        left: 0;
+        top: 9px;
+        width: 50px;
+        height: 6px;
+        background: var(--acc);
+        border-radius: 100px;
+      }
+      .slider .thumb {
+        position: absolute;
+        left: 40px;
+        top: 2px;
+        width: 20px;
+        height: 20px;
+        background: #fff;
+        border-radius: 100px;
+        box-shadow: 0 0.5px 6px rgba(0, 0, 0, 0.12);
+      }
+      .canvas.dark {
+        background: #1c1c1e;
+        color: #fff;
+      }
+      .canvas.dark .side {
+        background: rgba(44, 44, 46, 0.92);
+      }
+      .canvas.dark .menupill,
+      .canvas.dark .search {
+        background: #2c2c2e;
+        color: #fff;
+        box-shadow: 0 0 0 0.4px #48484a;
+      }
+      .canvas.dark h1,
+      .canvas.dark h2,
+      .canvas.dark .rowlabel {
+        color: #fff;
+      }
+      .canvas.dark .nrow.sel {
+        background: rgba(255, 255, 255, 0.16);
+      }
+      .canvas.dark .slider .track {
+        background: rgba(255, 255, 255, 0.18);
+      }
+      .canvas.dark .divider {
+        background: rgba(255, 255, 255, 0.14);
+      }
+      .canvas.dark .fade {
+        background: linear-gradient(
+          180deg,
+          rgba(28, 28, 30, 0) 0%,
+          #1c1c1e 100%
+        );
+      }
+      .divider {
+        position: absolute;
+        left: 265px;
+        right: 25px;
+        top: 308px;
+        height: 1px;
+        background: rgba(0, 0, 0, 0.08);
+      }
+      .fade {
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        height: 23px;
+        background: linear-gradient(
+          180deg,
+          rgba(249, 249, 249, 0) 0%,
+          #f9f9f9 100%
+        );
+      }
+    </style>
+    <style>
+      .sec {
+        display: none;
+      }
+      .sec.on {
+        display: block;
+      }
+      .sec h2 {
+        position: absolute;
+        left: 273px;
+        top: 97px;
+        font-size: 22px;
+        font-weight: 700;
+        color: #000;
+      }
+      .rowlabel small {
+        display: block;
+        font-size: 11px;
+        color: #8e8e93;
+        font-weight: 400;
+      }
+      .ctl {
+        position: absolute;
+        right: 25px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .tog {
+        width: 64px;
+        height: 28px;
+        background: #e5e5ea;
+        border-radius: 100px;
+        position: relative;
+        cursor: pointer;
+      }
+      .tog div {
+        position: absolute;
+        left: 2px;
+        top: 2px;
+        width: 38px;
+        height: 24px;
+        background: #fff;
+        border-radius: 100px;
+      }
+      .tog.on {
+        background: var(--acc);
+      }
+      .tog.on div {
+        left: auto;
+        right: 2px;
+      }
+      .chip {
+        background: #fff;
+        box-shadow: 0 0 0 0.4px #ebebeb;
+        border-radius: 999px;
+        padding: 7px 14px;
+        font-size: 13px;
+        cursor: pointer;
+        color: #1a1a1a;
+      }
+      .chip.on {
+        background: #1a1a1a;
+        color: #fff;
+      }
+      .edit {
+        background: #fff;
+        border-radius: 10px;
+        padding: 8px 12px;
+        font-size: 14px;
+        min-width: 160px;
+        box-shadow: 0 0 0 0.4px #ebebeb;
+        color: #1a1a1a;
+      }
+      .edit:focus {
+        outline: none;
+        box-shadow: 0 0 0 1.5px var(--acc);
+      }
+      .ubar {
+        width: 220px;
+        height: 10px;
+        background: rgba(0, 0, 0, 0.08);
+        border-radius: 99px;
+        position: relative;
+      }
+      .ubar i {
+        position: absolute;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        border-radius: 99px;
+        background: var(--acc);
+      }
+      .btn {
+        background: var(--acc);
+        color: #fff;
+        border-radius: 999px;
+        padding: 8px 16px;
+        font-size: 13px;
+        font-weight: 600;
+        cursor: pointer;
+      }
+      .canvas.compact .side .nrow {
+        font-size: 0;
+        justify-content: center;
+        gap: 0;
+      }
+      .canvas.compact .side .nrow .sf {
+        font-size: 15px;
+      }
+      .canvas.flat .side {
+        backdrop-filter: none;
+        background: #f1f1f3;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+      }
+      .canvas.flat .menupill,
+      .canvas.flat .search,
+      .canvas.flat .chip,
+      .canvas.flat .edit {
+        box-shadow: none;
+        border: 0.5px solid rgba(0, 0, 0, 0.12);
+      }
+      .canvas.sbright .side {
+        left: auto !important;
+        right: 10px !important;
+      }
+      .canvas.sbright h1,
+      .canvas.sbright .sec h2,
+      .canvas.sbright .rowlabel {
+        left: 34px !important;
+      }
+      .canvas.sbright .divider {
+        left: 34px !important;
+      }
+      .canvas.sbright .ctl,
+      .canvas.sbright .wheel,
+      .canvas.sbright .toggle,
+      .canvas.sbright .slider {
+        right: auto !important;
+        left: 290px !important;
+      }
+      .canvas.dark .rowlabel small {
+        color: #98989f;
+      }
+      .canvas.dark .chip {
+        background: #2c2c2e;
+        color: #fff;
+        box-shadow: 0 0 0 0.4px #48484a;
+      }
+      .canvas.dark .chip.on {
+        background: #fff;
+        color: #000;
+      }
+      .canvas.dark .edit {
+        background: #2c2c2e;
+        color: #fff;
+      }
+      .canvas.dark .tog {
+        background: #48484a;
+      }
+      .canvas.dark .ubar {
+        background: rgba(255, 255, 255, 0.16);
+      }
+      .canvas.dark.compact .side .nrow .sf {
+        color: #fff;
+      }
+      /* responsive-rescale appearance */
+      html,
+      body {
+        height: 100%;
+      }
+      body {
+        display: block !important;
+        min-height: 0 !important;
+        height: 100vh !important;
+        overflow: hidden !important;
+      }
+      .canvas {
+        width: 100% !important;
+        max-width: none !important;
+        height: 100vh !important;
+        min-height: 0 !important;
+        overflow-y: auto !important;
+        overflow-x: hidden !important;
+        padding-bottom: 24px;
+      }
+      .side {
+        position: fixed !important;
+        left: 10px !important;
+        top: 75px !important;
+        bottom: 10px !important;
+        height: auto !important;
+        width: 240px !important;
+        z-index: 20;
+      }
+      .wheel {
+        left: auto !important;
+        right: 25px;
+      }
+      .toggle {
+        left: auto !important;
+        right: 27px;
+      }
+      .slider {
+        left: auto !important;
+        right: 27px;
+      }
+      @media (max-width: 860px) {
+        .ubar {
+          width: 120px;
+        }
+        .sec h2 {
+          left: 16px !important;
+          top: 345px !important;
+        }
+        .side {
+          position: fixed !important;
+          left: 0 !important;
+          right: 0 !important;
+          top: 0 !important;
+          bottom: auto !important;
+          width: auto !important;
+          height: auto !important;
+          flex-direction: row;
+          flex-wrap: wrap;
+          gap: 4px;
+          border-radius: 0 0 18px 18px;
+          padding: 10px;
+        }
+        .nrow {
+          flex: 1 1 140px;
+        }
+        h1 {
+          left: 16px !important;
+          top: 300px !important;
+          font-size: 28px;
+        }
+        h2 {
+          left: 16px !important;
+          top: 345px !important;
+        }
+        .rowlabel {
+          left: 16px !important;
+        }
+        .wheel,
+        .toggle,
+        .slider,
+        .ctl {
+          right: 16px !important;
+        }
+        .divider {
+          left: 16px !important;
+          right: 16px !important;
+        }
+      }
+      h1 {
+        position: static;
+        max-width: 940px;
+        margin: 92px auto 0;
+        padding: 0 24px;
+        font-size: 34px;
+        font-weight: 700;
+        letter-spacing: 0.4px;
+        color: #000;
+      }
+      .wrap {
+        margin: 0 auto;
+        max-width: 940px;
+        padding: 0 24px 60px;
+      }
+      .set-sec {
+        margin-top: 48px;
+      }
+      .set-sec:first-child {
+        margin-top: 14px;
+      }
+      .set-sec h2 {
+        position: static;
+        font-size: 22px;
+        font-weight: 700;
+        color: #000;
+      }
+      .sum {
+        font-size: 13px;
+        color: #8e8e93;
+        margin: 2px 0 4px;
+      }
+      .srow {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 11px 0;
+      }
+      .srow .lab {
+        flex: 1;
+        font-size: 22px;
+        color: #000;
+      }
+      .srow .lab small {
+        display: block;
+        font-size: 11px;
+        color: #8e8e93;
+      }
+      .srow .chips {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        justify-content: flex-end;
+      }
+      .srow .wheel {
+        position: static;
+      }
+      .srow .toggle,
+      .srow .slider {
+        position: relative;
+        top: auto;
+        right: auto;
+      }
+      .sdiv {
+        height: 1px;
+        background: rgba(0, 0, 0, 0.08);
+        margin-top: 20px;
+      }
+      .canvas.dark .sdiv {
+        background: rgba(255, 255, 255, 0.14);
+      }
+      .canvas.dark .srow .lab {
+        color: #fff;
+      }
+      .canvas.dark .srow .lab small,
+      .canvas.dark .sum {
+        color: #98989f;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="canvas">
+      <a class="menupill" href="home.html"
+        ><span class="sf" style="font-weight: 590">􀯶</span><span>Menu</span></a
+      >
+      <div class="search">
+        <span class="sf">􀊫</span><span class="ph">Search</span
+        ><span class="sf">􀊰</span>
+      </div>
+
+      <h1>Settings</h1>
+      <div class="wrap">
+        <div class="set-sec">
+          <h2>Appearance</h2>
+          <div class="sum" id="sum">Blue - Light - 100%</div>
+          <div class="srow">
+            <div class="lab">
+              Accent colour<small>Tap the wheel to cycle</small>
+            </div>
+            <div class="wheel"><div></div></div>
+          </div>
+          <div class="srow">
+            <div class="lab">
+              Dark mode<small>Dark theme for this page</small>
+            </div>
+            <div class="toggle"><div></div></div>
+          </div>
+          <div class="srow">
+            <div class="lab">
+              Text size<small>Drag to scale 85 to 115%</small>
+            </div>
+            <div class="slider">
+              <div class="track"></div>
+              <div class="fill"></div>
+              <div class="thumb"></div>
+            </div>
+          </div>
+          <div class="sdiv"></div>
+        </div>
+        <div class="set-sec">
+          <h2>General</h2>
+          <div class="srow">
+            <div class="lab">
+              Reduce transparency<small>Opaque panels, no blur</small>
+            </div>
+            <div class="tog" id="g-flat"><div></div></div>
+          </div>
+          <div class="srow">
+            <div class="lab">Summaries<small>Show status lines</small></div>
+            <div class="tog on" id="g-sum"><div></div></div>
+          </div>
+          <div class="sdiv"></div>
+        </div>
+        <div class="set-sec">
+          <h2>Connections</h2>
+          <div class="sum" id="sum-con">Synced - Alerts on</div>
+          <div class="srow">
+            <div class="lab">Auto-sync<small>Sync on every change</small></div>
+            <div class="tog on" id="c-sync"><div></div></div>
+          </div>
+          <div class="srow">
+            <div class="lab">
+              Wi-Fi only<small>Pause sync on mobile data</small>
+            </div>
+            <div class="tog" id="c-wifi"><div></div></div>
+          </div>
+          <div class="srow">
+            <div class="lab">Notifications<small>Study reminders</small></div>
+            <div class="tog on" id="c-notif"><div></div></div>
+          </div>
+          <div class="sdiv"></div>
+        </div>
+        <div class="set-sec">
+          <h2>Personalisation</h2>
+          <div class="sum" id="sum-per">G'day, Luca - Methods</div>
+          <div class="srow">
+            <div class="lab">Display name<small>Used in greetings</small></div>
+            <div
+              class="edit"
+              id="p-name"
+              contenteditable="true"
+              spellcheck="false"
+            >
+              Luca
+            </div>
+          </div>
+          <div class="srow">
+            <div class="lab">Subject<small>Your main focus</small></div>
+            <div class="chips">
+              <div class="chip on" data-v="Methods">Methods</div>
+              <div class="chip" data-v="Specialist">Specialist</div>
+              <div class="chip" data-v="Physics">Physics</div>
+            </div>
+          </div>
+          <div class="srow">
+            <div class="lab">Greeting<small>Show hello line</small></div>
+            <div class="tog on" id="p-greet"><div></div></div>
+          </div>
+          <div class="sdiv"></div>
+        </div>
+        <div class="set-sec">
+          <h2>Model usage</h2>
+          <div class="sum" id="sum-use">Lightning - 78% of free tier</div>
+          <div class="srow">
+            <div class="lab">Model<small>Active assistant</small></div>
+            <div class="chips">
+              <div class="chip on" data-v="Lightning" data-pct="78">
+                Lightning
+              </div>
+              <div class="chip" data-v="Demo" data-pct="12">Demo</div>
+            </div>
+          </div>
+          <div class="srow">
+            <div class="lab">
+              This month<small id="u-sub">78% of 100 free requests</small>
+            </div>
+            <div class="ubar"><i id="u-fill" style="width: 78%"></i></div>
+          </div>
+          <div class="srow">
+            <div class="lab">
+              Reset month<small>Start the counter over</small>
+            </div>
+            <div class="btn" id="u-reset">Reset</div>
+          </div>
+          <div class="sdiv"></div>
+        </div>
+        <div class="set-sec">
+          <h2>Billing</h2>
+          <div class="sum" id="sum-bill">Free - $0 per month</div>
+          <div class="srow">
+            <div class="lab">Plan<small>Free or Plus</small></div>
+            <div class="chips">
+              <div class="chip on" data-v="Free" data-price="$0 per month">
+                Free
+              </div>
+              <div class="chip" data-v="Plus" data-price="$8 per month">
+                Plus
+              </div>
+            </div>
+          </div>
+          <div class="srow">
+            <div class="lab">
+              Receipts<small>Email for every payment</small>
+            </div>
+            <div class="tog on" id="b-rec"><div></div></div>
+          </div>
+          <div class="srow">
+            <div class="lab">Cancel plan<small>Back to Free</small></div>
+            <div class="btn" id="b-cancel">Cancel</div>
+          </div>
+          <div class="sdiv"></div>
+        </div>
+      </div>
+      <div class="fade"></div>
+    </div>
+    <script>
+      (function () {
+        var cv = document.querySelector(".canvas"),
+          sum = document.getElementById("sum");
+        var acc = ["#007AFF", "#6155F5", "#FF9500", "#34C759", "#FF383C"];
+        var names = ["Blue", "Purple", "Orange", "Green", "Red"];
+        var ai = 0,
+          dark = false,
+          pct = 50;
+        function paint() {
+          cv.style.setProperty("--acc", acc[ai]);
+          cv.classList.toggle("dark", dark);
+          cv.style.zoom = 0.85 + pct * 0.003;
+          sum.textContent =
+            names[ai] +
+            " - " +
+            (dark ? "Dark" : "Light") +
+            " - " +
+            Math.round((0.85 + pct * 0.003) * 100) +
+            "%";
+          var f = cv.querySelector(".slider .fill"),
+            th = cv.querySelector(".slider .thumb");
+          if (f) f.style.width = pct + "px";
+          if (th) th.style.left = pct - 10 + "px";
+          var tg = cv.querySelector(".toggle");
+          if (tg) tg.classList.toggle("on", dark);
+        }
+        var wh = cv.querySelector(".wheel");
+        if (wh)
+          wh.addEventListener("click", function () {
+            ai = (ai + 1) % acc.length;
+            paint();
+          });
+        var tg = cv.querySelector(".toggle");
+        if (tg)
+          tg.addEventListener("click", function () {
+            dark = !dark;
+            paint();
+          });
+        var sl = cv.querySelector(".slider");
+        if (sl) {
+          const set = function (x) {
+            var r = sl.getBoundingClientRect();
+            pct = Math.max(0, Math.min(100, ((x - r.left) / r.width) * 100));
+            paint();
+          };
+          sl.addEventListener("pointerdown", function (e) {
+            sl.setPointerCapture(e.pointerId);
+            set(e.clientX);
+            var mv = function (ev) {
+                set(ev.clientX);
+              },
+              up = function () {
+                sl.removeEventListener("pointermove", mv);
+                sl.removeEventListener("pointerup", up);
+              };
+            sl.addEventListener("pointermove", mv);
+            sl.addEventListener("pointerup", up);
+          });
+        }
+        paint();
+      })();
+    </script>
+    <script>
+      (function () {
+        var cv = document.querySelector(".canvas");
+        function chips(scope, fn) {
+          Array.prototype.forEach.call(
+            scope.querySelectorAll(".chip"),
+            function (c) {
+              c.addEventListener("click", function () {
+                Array.prototype.forEach.call(
+                  scope.querySelectorAll(".chip"),
+                  function (x) {
+                    x.classList.remove("on");
+                  },
+                );
+                c.classList.add("on");
+                fn(c);
+              });
+            },
+          );
+        }
+        function tog(id, fn) {
+          var el = document.getElementById(id);
+          if (el)
+            el.addEventListener("click", function () {
+              el.classList.toggle("on");
+              fn(el.classList.contains("on"));
+            });
+        }
+        tog("g-flat", function (v) {
+          cv.classList.toggle("flat", v);
+        });
+        tog("g-sum", function (v) {
+          Array.prototype.forEach.call(
+            document.querySelectorAll(".sum"),
+            function (s) {
+              s.style.display = v ? "" : "none";
+            },
+          );
+        });
+        var sync = true,
+          wifi = false,
+          notif = true;
+        function paintCon() {
+          var s = [];
+          s.push(sync ? (wifi ? "Synced - Wi-Fi only" : "Synced") : "Paused");
+          s.push(notif ? "Alerts on" : "Alerts off");
+          document.getElementById("sum-con").textContent = s.join(" - ");
+        }
+        tog("c-sync", function (v) {
+          sync = v;
+          paintCon();
+        });
+        tog("c-wifi", function (v) {
+          wifi = v;
+          paintCon();
+        });
+        tog("c-notif", function (v) {
+          notif = v;
+          paintCon();
+        });
+        var subj = "Methods",
+          greet = true;
+        function paintPer() {
+          var n =
+            (document.getElementById("p-name").textContent || "").trim() ||
+            "there";
+          document.getElementById("sum-per").textContent =
+            (greet ? "G'day, " + n : "No greeting") + " - " + subj;
+        }
+        document.getElementById("p-name").addEventListener("input", paintPer);
+        var perSec = null;
+        Array.prototype.forEach.call(
+          document.querySelectorAll(".set-sec"),
+          function (s) {
+            if (s.querySelector("#p-name")) perSec = s;
+          },
+        );
+        chips(perSec, function (c) {
+          subj = c.getAttribute("data-v");
+          paintPer();
+        });
+        tog("p-greet", function (v) {
+          greet = v;
+          paintPer();
+        });
+        var model = "Lightning",
+          pct = 78;
+        function paintUse() {
+          document.getElementById("sum-use").textContent =
+            model + " - " + pct + "% of free tier";
+          document.getElementById("u-sub").textContent =
+            pct + "% of 100 free requests";
+          document.getElementById("u-fill").style.width = pct + "%";
+        }
+        var useSec = null;
+        Array.prototype.forEach.call(
+          document.querySelectorAll(".set-sec"),
+          function (s) {
+            if (s.querySelector("#u-reset")) useSec = s;
+          },
+        );
+        chips(useSec, function (c) {
+          model = c.getAttribute("data-v");
+          pct = parseInt(c.getAttribute("data-pct"), 10);
+          paintUse();
+        });
+        document
+          .getElementById("u-reset")
+          .addEventListener("click", function () {
+            pct = 4;
+            paintUse();
+          });
+        var plan = "Free",
+          price = "$0 per month";
+        function paintBill() {
+          document.getElementById("sum-bill").textContent =
+            plan + " - " + price;
+        }
+        var billSec = null;
+        Array.prototype.forEach.call(
+          document.querySelectorAll(".set-sec"),
+          function (s) {
+            if (s.querySelector("#b-cancel")) billSec = s;
+          },
+        );
+        chips(billSec, function (c) {
+          plan = c.getAttribute("data-v");
+          price = c.getAttribute("data-price");
+          paintBill();
+        });
+        document
+          .getElementById("b-cancel")
+          .addEventListener("click", function () {
+            plan = "Free";
+            price = "$0 per month";
+            Array.prototype.forEach.call(
+              billSec.querySelectorAll(".chip"),
+              function (x) {
+                x.classList.toggle("on", x.getAttribute("data-v") === "Free");
+              },
+            );
+            paintBill();
+          });
+        tog("b-rec", function () {});
+        paintCon();
+        paintPer();
+        paintUse();
+        paintBill();
+      })();
+    </script>
+  </body>
+</html>

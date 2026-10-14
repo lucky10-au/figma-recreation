@@ -1,0 +1,1726 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Calendar — August 2026</title>
+    <style>
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        background: #f9f9f9;
+        font-family:
+          "SF Pro",
+          -apple-system,
+          BlinkMacSystemFont,
+          sans-serif;
+        display: flex;
+        align-items: flex-start;
+        justify-content: center;
+        min-height: 100vh;
+        padding: 0;
+        -webkit-font-smoothing: antialiased;
+      }
+      .canvas {
+        width: 100%;
+        max-width: 1440px;
+        height: 100vh;
+        min-height: 900px;
+        background: #f9f9f9;
+        border-radius: 0;
+        position: relative;
+        overflow: hidden;
+        box-shadow: none;
+      }
+      .sf {
+        font-family:
+          "SF Pro",
+          -apple-system,
+          sans-serif;
+        font-weight: 510;
+        line-height: 1;
+        display: inline-block;
+      }
+      .seg-top {
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+        top: 14px;
+        width: 403px;
+        height: 44px;
+        padding: 2px;
+        background: rgba(116, 116, 128, 0.08);
+        border-radius: 100px;
+        display: flex;
+        gap: 4px;
+        z-index: 5;
+      }
+      .seg-top div {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 17px;
+      }
+      .seg-top .sel {
+        background: #fff;
+        border-radius: 100px;
+        font-weight: 600;
+        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+      }
+      .topbar {
+        position: absolute;
+        left: 17px;
+        right: 17px;
+        top: 16px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        z-index: 5;
+      }
+      .pill {
+        background: #fff;
+        box-shadow: 0 0 0 0.5px #ebebeb;
+        border-radius: 999px;
+        height: 36px;
+        display: flex;
+        align-items: center;
+        padding: 0 6px;
+      }
+      .menu {
+        padding: 0 14px 0 10px;
+        gap: 3px;
+        font-size: 14px;
+      }
+      .menu .sf {
+        font-weight: 600;
+      }
+      .search {
+        width: 146px;
+        padding: 0 10px 0 12px;
+        gap: 6px;
+        color: rgba(60, 60, 67, 0.6);
+        font-size: 13px;
+      }
+      .search .ph {
+        color: #bfbfbf;
+        flex: 1;
+      }
+      .title {
+        position: absolute;
+        left: 308px;
+        top: 76px;
+        font-size: 34px;
+        letter-spacing: 0.3px;
+      }
+      .title b {
+        font-weight: 700;
+      }
+      .title span {
+        font-weight: 400;
+      }
+      .nav {
+        position: absolute;
+        right: 24px;
+        top: 76px;
+        display: flex;
+        gap: 6px;
+      }
+      .nav .pill {
+        width: 36px;
+        justify-content: center;
+        font-size: 14px;
+      }
+      .nav .today {
+        width: auto;
+        padding: 0 14px;
+      }
+      /* sidebar */
+      .side {
+        position: absolute;
+        left: 24px;
+        top: 68px;
+        width: 240px;
+        height: 808px;
+        background: #fff;
+        border-radius: 18px;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+      }
+      .panel {
+        padding: 12px 0;
+        flex: 1;
+      }
+      .mini {
+        padding: 12px 14px 16px 16px;
+        background: #fff;
+        border-top: 0.5px solid #f2f2f4;
+      }
+      .sec {
+        padding: 10px 14px 6px 18px;
+        display: flex;
+        justify-content: space-between;
+        color: #8e8e93;
+        font-size: 12px;
+        font-weight: 700;
+      }
+      .sec .sf {
+        font-size: 11px;
+        color: #c7c7cc;
+      }
+      .frow {
+        display: flex;
+        align-items: center;
+        padding: 7px 18px;
+        font-size: 14px;
+      }
+      .frow .dot {
+        margin-left: auto;
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        font-size: 12px;
+      }
+      .mini-head {
+        font-size: 16px;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        margin-bottom: 6px;
+      }
+      .mini-head .sf {
+        color: #0088ff;
+        font-size: 14px;
+        font-weight: 700;
+      }
+      .dow {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        font-size: 8px;
+        font-weight: 700;
+        color: #c7c7cc;
+        text-align: center;
+        margin-bottom: 2px;
+      }
+      .mgrid {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        font-size: 13px;
+        text-align: center;
+      }
+      .mgrid div {
+        height: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .mgrid .s {
+        background: #0088ff;
+        color: #fff;
+        border-radius: 50%;
+        width: 22px;
+        height: 22px;
+        margin: auto;
+      }
+      /* main */
+      .main {
+        position: absolute;
+        left: 300px;
+        right: 16px;
+        top: 122px;
+        bottom: 0;
+      }
+      .week {
+        display: grid;
+        grid-template-columns: 64px repeat(7, 1fr);
+        height: 36px;
+        align-items: center;
+        font-size: 16px;
+      }
+      .week .d {
+        text-align: center;
+      }
+      .week .pb {
+        background: #0088ff;
+        color: #fff;
+        border-radius: 999px;
+        padding: 3px 12px;
+        font-size: 15px;
+      }
+      .timeline {
+        display: grid;
+        grid-template-columns: 64px 1fr;
+        height: 740px;
+      }
+      .gutter {
+        position: relative;
+      }
+      .gutter span {
+        position: absolute;
+        right: 12px;
+        font-size: 19px;
+        transform: translateY(-50%);
+      }
+      .gutter span small {
+        font-size: 15px;
+      }
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        border-top: 1px solid #e7e7e9;
+      }
+      .col {
+        position: relative;
+        border-left: 1px solid #e7e7e9;
+      }
+      .col:last-child {
+        border-right: 1px solid #e7e7e9;
+      }
+      .slot {
+        height: 92px;
+        border-bottom: 1px solid #e7e7e9;
+      }
+      .ev {
+        position: absolute;
+        left: 3px;
+        right: 3px;
+        background: #ececf0;
+        border-radius: 9px;
+        overflow: hidden;
+        display: flex;
+      }
+      .ev .bar {
+        width: 7px;
+        flex-shrink: 0;
+      }
+      .ev .tx {
+        padding: 8px 4px 6px 8px;
+        overflow: hidden;
+      }
+      .ev .t {
+        font-size: 16px;
+        font-weight: 600;
+        line-height: 20px;
+        white-space: nowrap;
+      }
+      .ev .tm {
+        font-size: 13px;
+        color: #8e8e93;
+      }
+      .ev .d {
+        font-size: 8.5px;
+        line-height: 10px;
+        color: #9a9aa0;
+        margin-top: 6px;
+      }
+      a.pill {
+        color: inherit;
+        text-decoration: none;
+      }
+      .topbar {
+        pointer-events: none;
+      }
+      .topbar .pill {
+        pointer-events: auto;
+      }
+      .ev {
+        cursor: grab;
+        touch-action: none;
+      }
+      .ev .rz {
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        height: 10px;
+        cursor: ns-resize;
+        touch-action: none;
+      }
+      .seg-top div {
+        cursor: pointer;
+      }
+      .nav .pill.today,
+      .nav .pill:first-child,
+      .nav .pill:last-child {
+        cursor: pointer;
+      }
+      .mini-head,
+      .mgrid div {
+        cursor: pointer;
+      }
+      #view-day,
+      #view-month,
+      #view-year {
+        display: none;
+      }
+      .mview {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        gap: 6px;
+        padding: 4px 0 20px;
+      }
+      .mcell {
+        background: #fff;
+        border-radius: 12px;
+        min-height: 96px;
+        padding: 8px;
+        font-size: 14px;
+        cursor: pointer;
+        box-shadow: 0 0 0 0.5px #ebebeb;
+      }
+      .mcell.dim {
+        color: #c7c7cc;
+      }
+      .mcell .dots {
+        display: flex;
+        gap: 3px;
+        margin-top: 6px;
+        flex-wrap: wrap;
+      }
+      .mcell .dots i {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+      }
+      .mcell.sel {
+        outline: 2px solid #0088ff;
+      }
+      .mcell .mn {
+        font-weight: 600;
+      }
+      .yview {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 6px;
+        padding: 4px 0 20px;
+      }
+      .ycard {
+        background: #fff;
+        border-radius: 12px;
+        padding: 10px;
+        cursor: pointer;
+        box-shadow: 0 0 0 0.5px #ebebeb;
+        font-size: 14px;
+        min-height: 110px;
+      }
+      .ycard b {
+        display: block;
+        margin-bottom: 6px;
+        font-size: 15px;
+      }
+      .ycard .ydots {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 3px;
+      }
+      .ycard .ydots i {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+      }
+      .frow {
+        cursor: pointer;
+      }
+    </style>
+    <style>
+      /* responsive-rescale calendar */
+      html,
+      body {
+        height: 100%;
+      }
+      body {
+        display: block !important;
+        min-height: 0 !important;
+        height: 100vh !important;
+        overflow: hidden !important;
+      }
+      .canvas {
+        width: 100% !important;
+        max-width: none !important;
+        height: 100vh !important;
+        min-height: 0 !important;
+        overflow-y: auto !important;
+        overflow-x: hidden !important;
+        padding-bottom: 24px;
+      }
+      .side {
+        position: fixed !important;
+        left: 24px !important;
+        top: 68px !important;
+        bottom: 24px !important;
+        height: auto !important;
+        width: 240px !important;
+        z-index: 20;
+      }
+      .seg-top {
+        max-width: calc(100vw - 32px);
+      }
+      @media (max-width: 900px) {
+        .side {
+          position: static !important;
+          width: auto !important;
+          height: auto !important;
+          margin: 130px 16px 0 !important;
+        }
+        .main {
+          position: static !important;
+          margin: 16px !important;
+        }
+        .title {
+          left: 16px !important;
+        }
+        .timeline {
+          height: auto !important;
+          min-height: 400px;
+        }
+      }
+      @media (max-width: 560px) {
+        .seg-top {
+          width: calc(100vw - 32px);
+          font-size: 14px;
+        }
+        .seg-top div {
+          font-size: 14px;
+        }
+        .title {
+          font-size: 26px;
+        }
+        .nav {
+          right: 16px;
+        }
+        .week {
+          font-size: 12px;
+        }
+        .grid {
+          grid-template-columns: repeat(7, minmax(44px, 1fr)) !important;
+        }
+        .main {
+          overflow-x: auto;
+        }
+        .mview {
+          grid-template-columns: repeat(7, minmax(0, 1fr));
+          gap: 4px;
+        }
+        .mcell {
+          min-height: 70px;
+          font-size: 12px;
+        }
+        .yview {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+      }
+    </style>
+    <style>
+      #evov {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.28);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 90;
+      }
+      #evov[hidden] {
+        display: none;
+      }
+      .evmodal {
+        width: 360px;
+        max-width: calc(100vw - 40px);
+        background: #fff;
+        border-radius: 16px;
+        box-shadow: 0 18px 60px rgba(0, 0, 0, 0.25);
+        padding: 18px;
+      }
+      .ev-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 12px;
+      }
+      .ev-head b {
+        font-size: 18px;
+        color: #000;
+      }
+      #evx {
+        border: 0;
+        background: #f1f1f4;
+        width: 28px;
+        height: 28px;
+        border-radius: 999px;
+        font-size: 15px;
+        cursor: pointer;
+        color: #555;
+      }
+      .ev-lab {
+        display: block;
+        font-size: 12px;
+        font-weight: 600;
+        color: #555;
+        margin-bottom: 10px;
+      }
+      .ev-lab input,
+      .ev-lab select,
+      .ev-lab textarea {
+        display: block;
+        width: 100%;
+        margin-top: 4px;
+        border: 1px solid #e3e3e8;
+        border-radius: 10px;
+        padding: 9px 10px;
+        font-size: 14px;
+        font-family: inherit;
+        color: #000;
+        background: #fff;
+      }
+      .ev-lab input:focus,
+      .ev-lab select:focus,
+      .ev-lab textarea:focus {
+        outline: none;
+        border-color: #0088ff;
+      }
+      .ev-lab textarea {
+        resize: vertical;
+        min-height: 56px;
+      }
+      .ev-row {
+        display: flex;
+        gap: 8px;
+      }
+      .ev-row .ev-lab {
+        flex: 1;
+        min-width: 0;
+      }
+      .ev-actions {
+        display: flex;
+        gap: 8px;
+        margin-top: 4px;
+      }
+      .ev-actions button {
+        flex: 1;
+        border: 0;
+        border-radius: 10px;
+        padding: 10px;
+        font-size: 14px;
+        font-weight: 700;
+        cursor: pointer;
+      }
+      #evcancel {
+        background: #f1f1f4;
+        color: #222;
+      }
+      #evcreate {
+        background: #0088ff;
+        color: #fff;
+      }
+      #newbtn {
+        cursor: pointer;
+        font-size: 18px;
+        font-weight: 600;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="canvas">
+      <div class="seg-top">
+        <div>Day</div>
+        <div>Week</div>
+        <div class="sel">Month</div>
+        <div>Year</div>
+      </div>
+      <div class="topbar">
+        <a class="pill menu" href="home.html"
+          ><span class="sf">􀯶</span><span>Menu</span></a
+        >
+        <div class="pill search">
+          <span class="sf">􀊫</span><span class="ph">Search</span
+          ><span class="sf">􀊰</span>
+        </div>
+      </div>
+      <div class="title"><b>August </b><span>2026</span></div>
+      <div class="nav">
+        <div class="pill"><span class="sf">􀆉</span></div>
+        <div class="pill today">Today</div>
+        <div class="pill"><span class="sf">􀆊</span></div>
+        <div class="pill" id="newbtn" title="New event">+</div>
+      </div>
+
+      <div class="side">
+        <div class="panel">
+          <div class="sec"><span>Classes</span><span class="sf">􀆈</span></div>
+          <div class="frow">
+            Class A
+            <span class="dot" style="color: #ff383c"
+              ><span class="sf">􀀁</span></span
+            >
+          </div>
+          <div class="frow">
+            Class E
+            <span class="dot" style="color: #ff8d28"
+              ><span class="sf">􀀁</span></span
+            >
+          </div>
+          <div class="frow">
+            Class C
+            <span class="dot" style="color: #ffcc00"
+              ><span class="sf">􀀁</span></span
+            >
+          </div>
+          <div class="sec"><span>Other</span><span class="sf">􀆈</span></div>
+          <div class="frow">
+            Meetings
+            <span class="dot" style="color: #34c759"
+              ><span class="sf">􀀁</span></span
+            >
+          </div>
+          <div class="frow">
+            Holidays
+            <span class="dot" style="color: #00c8b3"
+              ><span class="sf">􀀁</span></span
+            >
+          </div>
+          <div class="frow">
+            Public Holidays
+            <span class="dot" style="color: #0088ff"
+              ><span class="sf">􀀁</span></span
+            >
+          </div>
+          <div class="frow">
+            Marking
+            <span class="dot" style="color: #6155f5"
+              ><span class="sf">􀀁</span></span
+            >
+          </div>
+        </div>
+        <div class="mini">
+          <div class="mini-head">August 2026 <span class="sf">􀆊</span></div>
+          <div class="dow">
+            <div>MON</div>
+            <div>TUE</div>
+            <div>WED</div>
+            <div>THU</div>
+            <div>FRI</div>
+            <div>SAT</div>
+            <div>SUN</div>
+          </div>
+          <div class="mgrid">
+            <div></div>
+            <div></div>
+            <div>1</div>
+            <div>2</div>
+            <div>3</div>
+            <div>4</div>
+            <div>5</div>
+            <div>6</div>
+            <div>7</div>
+            <div>8</div>
+            <div><span class="s">9</span></div>
+            <div>10</div>
+            <div>11</div>
+            <div>12</div>
+            <div>13</div>
+            <div>14</div>
+            <div>15</div>
+            <div>16</div>
+            <div>17</div>
+            <div>18</div>
+            <div>19</div>
+            <div>20</div>
+            <div>21</div>
+            <div>22</div>
+            <div>23</div>
+            <div>24</div>
+            <div>25</div>
+            <div>26</div>
+            <div>27</div>
+            <div>28</div>
+            <div>29</div>
+            <div>30</div>
+            <div></div>
+            <div></div>
+            <div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="main">
+        <div class="week">
+          <div></div>
+          <div class="d">Mon 13</div>
+          <div class="d">Tue 14</div>
+          <div class="d">Wed 15</div>
+          <div class="d"><span class="pb">Thu 16</span></div>
+          <div class="d">Fri 17</div>
+          <div class="d">Sat 18</div>
+          <div class="d">Sun 19</div>
+        </div>
+        <div class="timeline">
+          <div class="gutter">
+            <span style="top: 0">8<small>am</small></span
+            ><span style="top: 92px">9<small>am</small></span
+            ><span style="top: 184px">10<small>am</small></span
+            ><span style="top: 276px">11<small>am</small></span
+            ><span style="top: 368px">12<small>pm</small></span
+            ><span style="top: 460px">1<small>pm</small></span
+            ><span style="top: 552px">2<small>pm</small></span
+            ><span style="top: 644px">3<small>pm</small></span>
+          </div>
+          <div class="grid">
+            <div class="col">
+              <div class="slot"></div>
+              <div class="slot"></div>
+              <div class="slot"></div>
+              <div class="slot"></div>
+              <div class="slot"></div>
+              <div class="slot"></div>
+              <div class="slot"></div>
+              <div class="ev" style="top: 4px; height: 176px">
+                <div class="bar" style="background: #ff383c"></div>
+                <div class="tx">
+                  <div class="t">Class A</div>
+                  <div class="tm">8-10 am</div>
+                  <div class="d">
+                    Focus on analysing a key extract from the text, with
+                    students identifying techniques, discussing their effects,
+                    and writing a short analytical response.
+                  </div>
+                </div>
+              </div>
+              <div class="ev" style="top: 186px; height: 36px">
+                <div class="bar" style="background: #34c759"></div>
+                <div class="tx" style="padding-top: 6px">
+                  <div class="t" style="font-size: 14px">Meeting with ...</div>
+                </div>
+              </div>
+              <div class="ev" style="top: 280px; height: 36px">
+                <div class="bar" style="background: #34c759"></div>
+                <div class="tx" style="padding-top: 6px">
+                  <div class="t" style="font-size: 14px">Meeting with ...</div>
+                </div>
+              </div>
+            </div>
+            <div class="col">
+              <div class="slot"></div>
+              <div class="slot"></div>
+              <div class="slot"></div>
+              <div class="slot"></div>
+              <div class="slot"></div>
+              <div class="slot"></div>
+              <div class="slot"></div>
+              <div class="ev" style="top: 188px; height: 176px">
+                <div class="bar" style="background: #ff8d28"></div>
+                <div class="tx">
+                  <div class="t">Class E</div>
+                  <div class="tm">10-12 pm</div>
+                  <div class="d">
+                    Focus on examining a key passage from the text, with
+                    students identifying techniques, discussing their effects,
+                    and writing a brief analytical response.
+                  </div>
+                </div>
+              </div>
+              <div class="ev" style="top: 368px; height: 36px">
+                <div class="bar" style="background: #34c759"></div>
+                <div class="tx" style="padding-top: 6px">
+                  <div class="t" style="font-size: 14px">Meeting with ...</div>
+                </div>
+              </div>
+              <div class="ev" style="top: 464px; height: 176px">
+                <div class="bar" style="background: #ffcc00"></div>
+                <div class="tx">
+                  <div class="t">Class C</div>
+                  <div class="tm">1-3 pm</div>
+                  <div class="d">
+                    Focus on studying a key extract from the text, with students
+                    identifying techniques, explaining their effects, and
+                    writing a short analytical response.
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col">
+              <div class="slot"></div>
+              <div class="slot"></div>
+              <div class="slot"></div>
+              <div class="slot"></div>
+              <div class="slot"></div>
+              <div class="slot"></div>
+              <div class="slot"></div>
+              <div class="ev" style="top: 188px; height: 176px">
+                <div class="bar" style="background: #ff383c"></div>
+                <div class="tx">
+                  <div class="t">Class A</div>
+                  <div class="tm">10-12 pm</div>
+                  <div class="d">
+                    Focus on analysing a significant excerpt from the text, with
+                    students identifying techniques, considering their effects,
+                    and writing a concise analytical response.
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col">
+              <div class="slot"></div>
+              <div class="slot"></div>
+              <div class="slot"></div>
+              <div class="slot"></div>
+              <div class="slot"></div>
+              <div class="slot"></div>
+              <div class="slot"></div>
+              <div class="ev" style="top: 4px; height: 176px">
+                <div class="bar" style="background: #ff8d28"></div>
+                <div class="tx">
+                  <div class="t">Class E</div>
+                  <div class="tm">8-10 am</div>
+                  <div class="d">
+                    Focus on exploring a key section of the text, with students
+                    identifying techniques, analysing their effects, and writing
+                    a short response.
+                  </div>
+                </div>
+              </div>
+              <div class="ev" style="top: 280px; height: 84px">
+                <div class="bar" style="background: #34c759"></div>
+                <div class="tx">
+                  <div class="t">Faculty meeti...</div>
+                  <div class="tm">12-1 pm</div>
+                </div>
+              </div>
+              <div class="ev" style="top: 464px; height: 176px">
+                <div class="bar" style="background: #ffcc00"></div>
+                <div class="tx">
+                  <div class="t">Class C</div>
+                  <div class="tm">1-3 pm</div>
+                  <div class="d">
+                    Focus on analysing an important extract from the text, with
+                    students identifying techniques, discussing their effects,
+                    and producing a short analytical response.
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col">
+              <div class="slot"></div>
+              <div class="slot"></div>
+              <div class="slot"></div>
+              <div class="slot"></div>
+              <div class="slot"></div>
+              <div class="slot"></div>
+              <div class="slot"></div>
+              <div class="ev" style="top: 4px; height: 176px">
+                <div class="bar" style="background: #ff383c"></div>
+                <div class="tx">
+                  <div class="t">Class A</div>
+                  <div class="tm">8-10 am</div>
+                  <div class="d">
+                    Focus on revising a key extract from the text, with students
+                    identifying techniques, discussing their effects, and
+                    completing a timed analytical response.
+                  </div>
+                </div>
+              </div>
+              <div class="ev" style="top: 280px; height: 84px">
+                <div class="bar" style="background: #34c759"></div>
+                <div class="tx">
+                  <div class="t">Department mee...</div>
+                  <div class="tm">12-1 pm</div>
+                </div>
+              </div>
+            </div>
+            <div class="col">
+              <div class="slot"></div>
+              <div class="slot"></div>
+              <div class="slot"></div>
+              <div class="slot"></div>
+              <div class="slot"></div>
+              <div class="slot"></div>
+              <div class="slot"></div>
+              <div class="ev" style="top: 280px; height: 360px">
+                <div class="bar" style="background: #6155f5"></div>
+                <div class="tx">
+                  <div class="t">Last week’s<br />test marking</div>
+                  <div class="tm">11-4 pm</div>
+                </div>
+              </div>
+            </div>
+            <div class="col">
+              <div class="slot"></div>
+              <div class="slot"></div>
+              <div class="slot"></div>
+              <div class="slot"></div>
+              <div class="slot"></div>
+              <div class="slot"></div>
+              <div class="slot"></div>
+              <div class="ev" style="top: 4px; height: 176px">
+                <div class="bar" style="background: #00c8b3"></div>
+                <div class="tx">
+                  <div class="t">Holiday club</div>
+                  <div class="tm">8-10 am</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div id="evov" hidden>
+      <div class="evmodal" role="dialog" aria-label="New event">
+        <div class="ev-head">
+          <b>New event</b><button id="evx" aria-label="Close">×</button>
+        </div>
+        <label class="ev-lab"
+          >Title<input id="evtitle" placeholder="e.g. Class A" maxlength="80"
+        /></label>
+        <label class="ev-lab">Date<input id="evdate" type="date" /></label>
+        <div class="ev-row">
+          <label class="ev-lab"
+            >Starts<input id="evstart" type="time" value="09:00"
+          /></label>
+          <label class="ev-lab"
+            >Ends<input id="evend" type="time" value="10:00"
+          /></label>
+        </div>
+        <label class="ev-lab"
+          >Calendar<select id="evcat">
+            <option value="classA">Class A</option>
+            <option value="classE">Class E</option>
+            <option value="classC">Class C</option>
+            <option value="meetings" selected>Meetings</option>
+            <option value="holidays">Holidays</option>
+            <option value="public">Public Holidays</option>
+            <option value="marking">Marking</option>
+          </select></label
+        >
+        <label class="ev-lab"
+          >Notes<textarea
+            id="evdesc"
+            placeholder="Details (optional)"
+            maxlength="300"
+          ></textarea>
+        </label>
+        <div class="ev-actions">
+          <button id="evcancel">Cancel</button
+          ><button id="evcreate">Create</button>
+        </div>
+      </div>
+    </div>
+    <script>
+      (function () {
+        "use strict";
+        var LS = "figma.calendar.v1";
+        var PX = 92,
+          DAY0 = 8 * 60,
+          GH = 740,
+          SNAP = 23;
+        var CATS = {
+          "#FF383C": "classA",
+          "#FF8D28": "classE",
+          "#FFCC00": "classC",
+          "#34C759": "meetings",
+          "#00C8B3": "holidays",
+          "#0088FF": "public",
+          "#6155F5": "marking",
+        };
+        var CATLABEL = {
+          "Class A": "classA",
+          "Class E": "classE",
+          "Class C": "classC",
+          Meetings: "meetings",
+          Holidays: "holidays",
+          "Public Holidays": "public",
+          Marking: "marking",
+        };
+        var WN = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+        var MN = [
+          "January",
+          "February",
+          "March",
+          "April",
+          "May",
+          "June",
+          "July",
+          "August",
+          "September",
+          "October",
+          "November",
+          "December",
+        ];
+        function $(s, r) {
+          return (r || document).querySelector(s);
+        }
+        function $all(s, r) {
+          return Array.prototype.slice.call(
+            (r || document).querySelectorAll(s),
+          );
+        }
+        function iso(d) {
+          return (
+            d.getFullYear() +
+            "-" +
+            String(d.getMonth() + 1).padStart(2, "0") +
+            "-" +
+            String(d.getDate()).padStart(2, "0")
+          );
+        }
+        function parseIso(x) {
+          var q = x.split("-");
+          return new Date(+q[0], +q[1] - 1, +q[2]);
+        }
+        function mondayOf(d) {
+          var x = new Date(d);
+          var k = (x.getDay() + 6) % 7;
+          x.setDate(x.getDate() - k);
+          x.setHours(0, 0, 0, 0);
+          return x;
+        }
+        function addD(d, n) {
+          var x = new Date(d);
+          x.setDate(x.getDate() + n);
+          return x;
+        }
+        var SEED_MON = new Date(2026, 7, 13);
+        function hexOf(el) {
+          var m = (el.getAttribute("style") || "").match(/#[0-9A-Fa-f]{6}/);
+          return m ? m[0].toUpperCase() : "";
+        }
+        function ascii(x) {
+          return (x || "").replace(/[^\x20-\x7E]/g, "").trim();
+        }
+
+        function parseSeed() {
+          var evs = [],
+            n = 0;
+          $all(".main .grid .col").forEach(function (col, ci) {
+            var date = iso(addD(SEED_MON, ci));
+            $all(".ev", col).forEach(function (el) {
+              var t = $(".t", el),
+                tm = $(".tm", el),
+                d = $(".d", el);
+              evs.push({
+                id: "ev" + n++,
+                date: date,
+                top: parseFloat(el.style.top) || 0,
+                h: parseFloat(el.style.height) || 0,
+                title: t ? t.innerHTML : "",
+                tm: tm ? tm.textContent : null,
+                desc: d ? d.textContent : "",
+                color: hexOf($(".bar", el)),
+                cat: "",
+                x: 0,
+              });
+            });
+          });
+          evs.forEach(function (r) {
+            r.cat = CATS[r.color] || "meetings";
+          });
+          return evs;
+        }
+
+        var S = {
+          view: "week",
+          off: 0,
+          sel: "2026-08-16",
+          hidden: [],
+          mini: { y: 2026, m: 8 },
+          vmonth: { y: 2026, m: 8 },
+          vyear: 2026,
+          evs: null,
+        };
+        function save() {}
+        function load() {
+          return false;
+        }
+        if (!load()) S.evs = parseSeed();
+
+        function mondayShown() {
+          return addD(SEED_MON, S.off * 7);
+        }
+        function hidden(r) {
+          return S.hidden.indexOf(r.cat) >= 0;
+        }
+
+        function evNode(r) {
+          var el = document.createElement("div");
+          el.className = "ev";
+          el.dataset.id = r.id;
+          el.style.top = r.top + "px";
+          el.style.height = r.h + "px";
+          var c = r.h < 60;
+          var html =
+            '<div class="bar" style="background:' +
+            r.color +
+            '"></div><div class="tx"' +
+            (c ? ' style="padding-top:6px"' : "") +
+            '><div class="t"' +
+            (c ? ' style="font-size:14px"' : "") +
+            ">" +
+            r.title +
+            "</div>";
+          if (r.tm !== null && r.tm !== undefined)
+            html += '<div class="tm">' + r.tm + "</div>";
+          if (r.desc && r.h >= 80)
+            html += '<div class="d">' + r.desc + "</div>";
+          html += '</div><div class="rz"></div>';
+          el.innerHTML = html;
+          wire(el, r);
+          return el;
+        }
+
+        function colDate(col, grid) {
+          if (col.id === "day-col") return S.sel;
+          var cols = $all(".col", grid);
+          return iso(addD(mondayShown(), cols.indexOf(col)));
+        }
+        function renderInto(col, dateStr) {
+          $all(".ev", col).forEach(function (e) {
+            e.remove();
+          });
+          S.evs
+            .filter(function (r) {
+              return r.date === dateStr && !hidden(r);
+            })
+            .forEach(function (r) {
+              col.appendChild(evNode(r));
+            });
+        }
+
+        function fh(m) {
+          var h = Math.floor(m / 60),
+            mm = m % 60;
+          var h12 = ((h + 11) % 12) + 1;
+          return {
+            t: h12 + (mm ? ":" + (mm < 10 ? "0" : "") + mm : ""),
+            ap: h < 12 ? "am" : "pm",
+          };
+        }
+        function fmt(top, h) {
+          var st = DAY0 + Math.round((top / PX) * 4) * 15;
+          var en = st + Math.max(1, Math.round((h / PX) * 4)) * 15;
+          var a = fh(st),
+            b = fh(en);
+          return a.t + "-" + b.t + " " + b.ap;
+        }
+
+        /* drag + resize */
+        function wire(el, r) {
+          el.addEventListener("pointerdown", function (e) {
+            if (e.button !== undefined && e.button !== 0) return;
+            var resize =
+              e.target.classList && e.target.classList.contains("rz");
+            var colEl = el.parentNode,
+              grid = colEl.parentNode;
+            var cols = $all(".col", grid);
+            var gr = grid.getBoundingClientRect();
+            var colW = gr.width / Math.max(1, cols.length);
+            var sy = e.clientY,
+              ot = r.top,
+              oh = r.h;
+            try {
+              el.setPointerCapture(e.pointerId);
+            } catch (_) {}
+            function mv(ev) {
+              if (resize) {
+                r.h = Math.min(
+                  GH - ot,
+                  Math.max(
+                    36,
+                    Math.round((oh + ev.clientY - sy) / SNAP) * SNAP,
+                  ),
+                );
+                el.style.height = r.h + "px";
+              } else {
+                var ni = Math.min(
+                  cols.length - 1,
+                  Math.max(0, Math.floor((ev.clientX - gr.left) / colW)),
+                );
+                var ncol = cols[ni];
+                if (ncol !== colEl) {
+                  colEl = ncol;
+                  ncol.appendChild(el);
+                  r.date = colDate(ncol, grid);
+                }
+                r.top = Math.min(
+                  GH - r.h,
+                  Math.max(0, Math.round((ot + ev.clientY - sy) / SNAP) * SNAP),
+                );
+                el.style.top = r.top + "px";
+              }
+            }
+            function up() {
+              el.removeEventListener("pointermove", mv);
+              el.removeEventListener("pointerup", up);
+              el.removeEventListener("pointercancel", up);
+              if (r.tm !== null && r.tm !== undefined) r.tm = fmt(r.top, r.h);
+              save();
+              render();
+            }
+            el.addEventListener("pointermove", mv);
+            el.addEventListener("pointerup", up);
+            el.addEventListener("pointercancel", up);
+            e.preventDefault();
+          });
+        }
+
+        /* view scaffolding: wrap week, build day/month/year */
+        var main = $(".main"),
+          weekEl = $(".week", main),
+          tlEl = $(".timeline", main);
+        var vw = document.createElement("div");
+        vw.id = "view-week";
+        main.insertBefore(vw, weekEl);
+        vw.appendChild(weekEl);
+        vw.appendChild(tlEl);
+        var vd = document.createElement("div");
+        vd.id = "view-day";
+        var slots = "";
+        for (var i = 0; i < 7; i++) slots += '<div class="slot"></div>';
+        var gut =
+          '<div class="gutter"><span style="top:0">8<small>am</small></span><span style="top:92px">9<small>am</small></span><span style="top:184px">10<small>am</small></span><span style="top:276px">11<small>am</small></span><span style="top:368px">12<small>pm</small></span><span style="top:460px">1<small>pm</small></span><span style="top:552px">2<small>pm</small></span><span style="top:644px">3<small>pm</small></span></div>';
+        vd.innerHTML =
+          '<div class="week"><div></div><div class="d" id="day-d"></div></div><div class="timeline">' +
+          gut +
+          '<div class="grid" style="grid-template-columns:1fr"><div class="col" id="day-col">' +
+          slots +
+          "</div></div></div>";
+        main.appendChild(vd);
+        var vm = document.createElement("div");
+        vm.id = "view-month";
+        vm.innerHTML = '<div class="mview" id="mview"></div>';
+        main.appendChild(vm);
+        var vy = document.createElement("div");
+        vy.id = "view-year";
+        vy.innerHTML = '<div class="yview" id="yview"></div>';
+        main.appendChild(vy);
+
+        var VIEWS = ["day", "week", "month", "year"];
+        var IDS = {
+          day: "view-day",
+          week: "view-week",
+          month: "view-month",
+          year: "view-year",
+        };
+        function setView(v) {
+          S.view = v;
+          save();
+          VIEWS.forEach(function (k) {
+            document.getElementById(IDS[k]).style.display =
+              k === v ? "block" : "none";
+          });
+          var tabs = $all(".seg-top div");
+          tabs.forEach(function (t) {
+            t.classList.remove("sel");
+          });
+          tabs[VIEWS.indexOf(v)].classList.add("sel");
+          render();
+        }
+        $all(".seg-top div").forEach(function (t, i) {
+          t.addEventListener("click", function () {
+            setView(VIEWS[i]);
+          });
+        });
+        (function fixSel() {
+          var tabs = $all(".seg-top div");
+          tabs.forEach(function (t) {
+            t.classList.remove("sel");
+          });
+          tabs[1].classList.add("sel");
+        })();
+
+        function renderWeek() {
+          var mon = mondayShown(),
+            cols = $all("#view-week .grid .col"),
+            heads = $all("#view-week .week .d");
+          cols.forEach(function (col, i) {
+            renderInto(col, iso(addD(mon, i)));
+          });
+          heads.forEach(function (h, i) {
+            var d = addD(mon, i),
+              lab = WN[i] + " " + d.getDate();
+            if (iso(d) === S.sel)
+              h.innerHTML = '<span class="pb">' + lab + "</span>";
+            else h.textContent = lab;
+            h.onclick = (function (dt) {
+              return function () {
+                S.sel = iso(dt);
+                save();
+                setView("day");
+              };
+            })(d);
+          });
+          var base = addD(mon, 3);
+          $(".title").innerHTML =
+            "<b>" +
+            MN[base.getMonth()] +
+            " </b><span>" +
+            base.getFullYear() +
+            "</span>";
+        }
+        function renderDay() {
+          var d = parseIso(S.sel);
+          var h = $("#day-d");
+          var diff = Math.round((d - mondayShown()) / 864e5);
+          var lab =
+            (diff >= 0 && diff < 7 ? WN[diff] : WN[(d.getDay() + 6) % 7]) +
+            " " +
+            d.getDate();
+          h.innerHTML = '<span class="pb">' + lab + "</span>";
+          renderInto($("#day-col"), S.sel);
+        }
+        function dotsFor(dateStr, all) {
+          var seen = [],
+            out = [];
+          S.evs.forEach(function (r) {
+            if (r.date === dateStr && !hidden(r) && seen.indexOf(r.color) < 0) {
+              seen.push(r.color);
+              out.push(r.color);
+            }
+          });
+          return all ? out : out.slice(0, 4);
+        }
+        function renderMonth() {
+          var y = S.vmonth.y,
+            m = S.vmonth.m;
+          var first = new Date(y, m - 1, 1),
+            start = mondayOf(first),
+            box = $("#mview");
+          box.innerHTML = "";
+          for (var i = 0; i < 42; i++) {
+            var d = addD(start, i),
+              cell = document.createElement("div");
+            cell.className =
+              "mcell" +
+              (d.getMonth() !== m - 1 ? " dim" : "") +
+              (iso(d) === S.sel ? " sel" : "");
+            var dots = dotsFor(iso(d))
+              .map(function (c) {
+                return '<i style="background:' + c + '"></i>';
+              })
+              .join("");
+            cell.innerHTML =
+              '<span class="mn">' +
+              d.getDate() +
+              '</span><div class="dots">' +
+              dots +
+              "</div>";
+            cell.onclick = (function (dt) {
+              return function () {
+                S.sel = iso(dt);
+                save();
+                setView("day");
+              };
+            })(d);
+            box.appendChild(cell);
+          }
+        }
+        function renderYear() {
+          var box = $("#yview");
+          box.innerHTML = "";
+          for (var m = 1; m <= 12; m++) {
+            var seen = [];
+            S.evs.forEach(function (r) {
+              var p = r.date.split("-");
+              if (+p[0] === S.vyear && +p[1] === m && seen.indexOf(r.color) < 0)
+                seen.push(r.color);
+            });
+            var card = document.createElement("div");
+            card.className = "ycard";
+            card.innerHTML =
+              "<b>" +
+              MN[m - 1] +
+              '</b><div class="ydots">' +
+              seen
+                .map(function (c) {
+                  return '<i style="background:' + c + '"></i>';
+                })
+                .join("") +
+              "</div>";
+            card.onclick = (function (mm) {
+              return function () {
+                S.vmonth = { y: S.vyear, m: mm };
+                S.mini = { y: S.vyear, m: mm };
+                renderMini();
+                setView("month");
+              };
+            })(m);
+            box.appendChild(card);
+          }
+        }
+        function render() {
+          if (S.view === "week") renderWeek();
+          else if (S.view === "day") renderDay();
+          else if (S.view === "month") renderMonth();
+          else renderYear();
+        }
+
+        /* prev / today / next */
+        var pills = $all(".nav .pill");
+        pills[0].addEventListener("click", function () {
+          S.off--;
+          syncMonth();
+          save();
+          render();
+        });
+        pills[1].addEventListener("click", function () {
+          S.off = 0;
+          syncMonth();
+          save();
+          render();
+        });
+        pills[2].addEventListener("click", function () {
+          S.off++;
+          syncMonth();
+          save();
+          render();
+        });
+        function syncMonth() {
+          var b = addD(mondayShown(), 3);
+          S.vmonth = { y: b.getFullYear(), m: b.getMonth() + 1 };
+          S.vyear = b.getFullYear();
+        }
+
+        /* category filters */
+        $all(".frow").forEach(function (row) {
+          var lab = ascii(row.textContent),
+            cat = CATLABEL[lab];
+          if (!cat) return;
+          if (S.hidden.indexOf(cat) >= 0) row.style.opacity = ".35";
+          row.addEventListener("click", function () {
+            var i = S.hidden.indexOf(cat);
+            if (i >= 0) {
+              S.hidden.splice(i, 1);
+              row.style.opacity = "";
+            } else {
+              S.hidden.push(cat);
+              row.style.opacity = ".35";
+            }
+            save();
+            render();
+          });
+        });
+
+        /* mini calendar */
+        function gotoDate(ds) {
+          S.sel = ds;
+          var d = parseIso(ds);
+          S.off = Math.round((d - SEED_MON) / 864e5 / 7);
+          syncMonth();
+          S.mini = { y: d.getFullYear(), m: d.getMonth() + 1 };
+          save();
+          renderMini();
+          render();
+        }
+        function wireMiniDays(box) {
+          $all("div", box).forEach(function (cell) {
+            var ds = cell.dataset.iso;
+            if (!ds) {
+              var t = ascii(cell.textContent);
+              if (!/^\d{1,2}$/.test(t)) return;
+              ds =
+                S.mini.y +
+                "-" +
+                String(S.mini.m).padStart(2, "0") +
+                "-" +
+                t.padStart(2, "0");
+              cell.dataset.iso = ds;
+            }
+            cell.addEventListener("click", function () {
+              gotoDate(cell.dataset.iso);
+            });
+          });
+        }
+        function renderMini() {
+          var grid = $(".mgrid"),
+            head = $(".mini-head");
+          head.childNodes[0].textContent =
+            MN[S.mini.m - 1] + " " + S.mini.y + " ";
+          var first = new Date(S.mini.y, S.mini.m - 1, 1),
+            start = mondayOf(first);
+          var days = new Date(S.mini.y, S.mini.m, 0).getDate();
+          grid.innerHTML = "";
+          for (var i = 0; i < 42; i++) {
+            var d = addD(start, i),
+              cell = document.createElement("div");
+            if (d.getMonth() === S.mini.m - 1) {
+              if (iso(d) === S.sel) {
+                cell.innerHTML = '<span class="s">' + d.getDate() + "</span>";
+              } else cell.textContent = d.getDate();
+              cell.dataset.iso = iso(d);
+              cell.addEventListener(
+                "click",
+                (function (ds) {
+                  return function () {
+                    gotoDate(ds);
+                  };
+                })(iso(d)),
+              );
+            }
+            grid.appendChild(cell);
+            if (d.getMonth() === S.mini.m - 1 && d.getDate() === days) {
+              var trail = (7 - ((i + 1) % 7)) % 7;
+              for (var k = 0; k < trail; k++)
+                grid.appendChild(document.createElement("div"));
+              break;
+            }
+          }
+        }
+        (function initMini() {
+          wireMiniDays($(".mgrid"));
+          var chev = $(".mini-head .sf"),
+            head = $(".mini-head");
+          chev.title = "Next month";
+          chev.addEventListener("click", function (e) {
+            e.stopPropagation();
+            S.mini.m++;
+            if (S.mini.m > 12) {
+              S.mini.m = 1;
+              S.mini.y++;
+            }
+            save();
+            renderMini();
+          });
+          head.childNodes[0].textContent =
+            MN[S.mini.m - 1] + " " + S.mini.y + " ";
+          head.title = "Previous month (text) / next (arrow)";
+          head.addEventListener("click", function (e) {
+            if (e.target === chev) return;
+            S.mini.m--;
+            if (S.mini.m < 1) {
+              S.mini.m = 12;
+              S.mini.y--;
+            }
+            save();
+            renderMini();
+          });
+        })();
+
+        /* creation modal */
+        var CATCOLOR = {
+          classA: "#FF383C",
+          classE: "#FF8D28",
+          classC: "#FFCC00",
+          meetings: "#34C759",
+          holidays: "#00C8B3",
+          public: "#0088FF",
+          marking: "#6155F5",
+        };
+        var evSeq = S.evs.length;
+        var evov = $("#evov"),
+          evtitle = $("#evtitle"),
+          evdate = $("#evdate"),
+          evstart = $("#evstart"),
+          evend = $("#evend"),
+          evcat = $("#evcat"),
+          evdesc = $("#evdesc");
+        function esc(x) {
+          return (x || "")
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;");
+        }
+        function toMin(t) {
+          var p = (t || "").split(":");
+          if (p.length < 2) return null;
+          var h = +p[0],
+            m = +p[1];
+          if (isNaN(h) || isNaN(m)) return null;
+          return h * 60 + m;
+        }
+        function toHM(m) {
+          m = Math.max(0, Math.min(1439, Math.round(m)));
+          var h = Math.floor(m / 60),
+            mm = m % 60;
+          return (h < 10 ? "0" : "") + h + ":" + (mm < 10 ? "0" : "") + mm;
+        }
+        function openEv(ds, sm, em) {
+          evtitle.value = "";
+          evdate.value = ds || S.sel;
+          evstart.value = toHM(sm === undefined || sm === null ? 9 * 60 : sm);
+          evend.value = toHM(
+            em === undefined || em === null
+              ? sm === undefined || sm === null
+                ? 10 * 60
+                : sm + 60
+              : em,
+          );
+          evdesc.value = "";
+          evov.hidden = false;
+          setTimeout(function () {
+            evtitle.focus();
+          }, 0);
+        }
+        function closeEv() {
+          evov.hidden = true;
+        }
+        function createEv() {
+          var ds = evdate.value || S.sel;
+          var sm = toMin(evstart.value),
+            em = toMin(evend.value);
+          if (sm === null) sm = 9 * 60;
+          if (em === null || em <= sm) em = sm + 60;
+          var top = Math.min(GH - 36, Math.max(0, ((sm - DAY0) / 60) * PX));
+          var h = Math.max(36, Math.round(((em - sm) / 60) * PX));
+          if (top + h > GH) h = GH - top;
+          var cat = evcat.value || "meetings";
+          var r = {
+            id: "ev" + evSeq++,
+            date: ds,
+            top: Math.round(top),
+            h: h,
+            title: esc(ascii(evtitle.value)) || "New event",
+            tm: null,
+            desc: esc(ascii(evdesc.value)),
+            color: CATCOLOR[cat] || "#34C759",
+            cat: cat,
+            x: 0,
+          };
+          r.tm = fmt(r.top, r.h);
+          S.evs.push(r);
+          save();
+          closeEv();
+          render();
+        }
+        $("#newbtn").addEventListener("click", function () {
+          openEv(S.sel, 9 * 60, 10 * 60);
+        });
+        $("#evx").addEventListener("click", closeEv);
+        $("#evcancel").addEventListener("click", closeEv);
+        $("#evcreate").addEventListener("click", createEv);
+        evov.addEventListener("click", function (e) {
+          if (e.target === evov) closeEv();
+        });
+        document.addEventListener("keydown", function (e) {
+          if (e.key === "Escape" && !evov.hidden) closeEv();
+        });
+        main.addEventListener("dblclick", function (e) {
+          if (
+            e.target.closest(".ev") ||
+            e.target.closest("#view-month") ||
+            e.target.closest("#view-year")
+          )
+            return;
+          var col = e.target.closest(".col");
+          if (!col || !col.parentNode) return;
+          var ds = colDate(col, col.parentNode);
+          var r = col.getBoundingClientRect();
+          var mins = DAY0 + ((e.clientY - r.top) / PX) * 60;
+          mins = Math.min(930, Math.max(DAY0, Math.round(mins / 30) * 30));
+          openEv(ds, mins, mins + 60);
+        });
+
+        render();
+        setView(
+          S.view === "week" ||
+            S.view === "day" ||
+            S.view === "month" ||
+            S.view === "year"
+            ? S.view
+            : "week",
+        );
+      })();
+    </script>
+  </body>
+</html>
